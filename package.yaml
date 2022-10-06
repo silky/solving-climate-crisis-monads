@@ -1,0 +1,29 @@
+name:                climate-crisis-monads
+version:             0.1.0.0
+homepage:            https://github.com/silky/solving-climate-crisis-monads
+license:             BSD3
+author:              Noon van der Silk
+maintainer:          noonsilk@gmail.com
+copyright:           2022 Noon van der Silk
+category:            Web
+extra-source-files:
+  - README.md
+
+dependencies:
+  - base >= 4.7 && < 5
+
+ghc-options:
+  - -Wall
+  - -Wcompat
+  - -Widentities
+  - -Wincomplete-record-updates
+  - -Wincomplete-uni-patterns
+  - -Wmissing-export-lists
+  - -Wmissing-home-modules
+  - -Wpartial-fields
+  - -Wredundant-constraints
+
+executables:
+  climate-crisis-monads:
+    source-dirs:      src
+    main:             Main.hs
