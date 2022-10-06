@@ -2,6 +2,9 @@
 
 ### Talk outline
 
+(Less of a talk outline and more of just a random collection of notes from my
+ notebook.)
+
 ```
 f :: a -> b
 ```
@@ -42,6 +45,14 @@ f :: a -> b
 
   Problem: Abstraction is entirely gone! May as well just live in IO.
 
+- Next:
+  - How to build adaptable businesses?
+  - i.e. `f` should very over time.
+
+- Terrible ideas:
+  - `f :: a -> b -> ((a, b), b)`
+  - Emits a new function each time? (No, it's equivalent to not doing that.)
+
 ### Things to not forget
 
 - What is `f :: a -> b`?
@@ -70,4 +81,14 @@ f :: a -> b
   - Can _no longer_ decompose; focus only on sub-components; only think
   locally; ?!?!!?!?!
     - Extremely stressful?
+
+- Emissions
+  - Scope 1, 2, 3 emissions
+    - 3 - Ill-posed
+    - All your downstream suppliers
+    - If two people focus on scope 3, they could be focusing on the same thing
+      - Feature?
+      - But is it _surfaced_ ; i.e. who are they people that, by fixing their
+        scope 1 emissions, make the biggest impact?
+
 
