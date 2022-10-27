@@ -92,3 +92,21 @@ f :: a -> b
         scope 1 emissions, make the biggest impact?
 
 
+#### Random links
+
+- <https://github.com/buildingdata/earth3d-radiation-threejs>
+  - <https://github.com/silky/ExplodingObjects>
+
+  Idea: Use this planet; then explode it slightly, then crush up small things.
+
+- <https://github.com/silky/threex.planets/blob/master/examples/earth.html>
+
+- <https://carbontracker.org/>
+  - <https://www.linkedin.com/pulse/lifegoals-lewis-jenkins/?trackingId=foJIXnopOVGBiLkjSbq26A%3D%3D>
+  - "Out of more than 130 industrial companies that account for the bulk of pollution, 98 per cent did not provide evidence that their 2021 financial statements had taken into account the effects of climate-related matters..."
+
+  - At the same the recent Pay for Climate Performance report "Grades 47 of the largest companies in the US on their use of climate related pay incentives... A whopping 89% of assessed companies received D or F grades for failing to include a quantitate or *any* type of climate related incentive"
+
+- <https://www.un.org/sg/en/content/sg/statement/2022-09-20/secretary-generals-address-the-general-assembly-trilingual-delivered-follows-scroll-further-down-for-all-english-and-all-french>
+
+- <https://doughnuteconomics.org/stories/188>
