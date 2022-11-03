@@ -17,8 +17,11 @@
         myDevTools = [
           hPkgs.ghc
           stack-wrapped
+          pkgs.blender
+          pkgs.ffmpeg
           # External C libraries needed by some Haskell packages
           pkgs.zlib
+          pkgs.zlib.dev
         ];
 
         hPkgs = pkgs.haskell.packages."ghc902";
