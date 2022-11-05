@@ -1,0 +1,11 @@
+block vars
+
+doctype html
+html(lang="en")
+  head
+    include ../_layout/_head.pug
+  body
+    .l-page(data-id = page.id)
+    block content
+    block scripts
+    script(src="/sketch-threejs/js/main.js")
