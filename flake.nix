@@ -43,6 +43,9 @@
       devShell = pkgs.mkShell {
         buildInputs = [
           myDevTools
+
+          pkgs.nodejs
+          pkgs.nodePackages.npm
         ];
 
         NIX_PATH = "nixpkgs=" + pkgs.path;
