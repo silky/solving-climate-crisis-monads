@@ -1,9 +1,9 @@
 const THREE = require('three');
 const { debounce } = require('@ykob/js-util');
-const { MathEx } = require('@ykob/js-util');
 const { OrbitControls } = require('three/examples/jsm/controls/OrbitControls');
 const FlameCore = require('./FlameCore').default;
 const FlameCylinder = require('./FlameCylinder').default;
+const BackgroundSphere = require('./BackgroundSphere').default;
 
 export default function() {
   // ==========
@@ -36,6 +36,7 @@ export default function() {
 
   const flameCore = new FlameCore();
   const flameCylinder = new FlameCylinder();
+  const background = new BackgroundSphere();
 
   // ==========
   // Define functions
@@ -90,8 +91,10 @@ export default function() {
 
     flameCore.createObj();
     flameCylinder.createObj();
+    background.createObj();
 
     scene.add(flameCore.obj);
+    scene.add(background.obj);
 
     renderer.setClearColor(0xffffff, 0);
     clock.start();
