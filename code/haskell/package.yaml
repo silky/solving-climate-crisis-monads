@@ -13,8 +13,10 @@ dependencies:
   - bytestring
   - servant
   - servant-server
+  - servant-websockets
   - text
   - wai
+  - websockets
 
 ghc-options:
   - -Wall
@@ -22,16 +24,19 @@ ghc-options:
   - -Widentities
   - -Wincomplete-record-updates
   - -Wincomplete-uni-patterns
-  - -Wmissing-export-lists
   - -Wmissing-home-modules
   - -Wpartial-fields
   - -Wredundant-constraints
 
 default-extensions:
+  - DataKinds
+  - DeriveGeneric
+  - DerivingStrategies
   - ImportQualifiedPost
   - OverloadedStrings
   - PackageImports
   - TypeApplications
+  - TypeOperators
 
 executables:
   climate-crisis-monads:
