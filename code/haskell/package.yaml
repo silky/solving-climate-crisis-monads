@@ -16,7 +16,9 @@ dependencies:
   - servant-websockets
   - text
   - wai
+  - warp
   - websockets
+  - net-mqtt
 
 ghc-options:
   - -Wall

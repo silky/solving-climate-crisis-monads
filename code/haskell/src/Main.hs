@@ -1,5 +1,7 @@
-module Main (main) where
+module Main where
+
+import "warp" Network.Wai.Handler.Warp (run)
+import Server (app)
 
 main :: IO ()
-main = do
-  putStrLn "hello world"
+main = run 8080 $ app

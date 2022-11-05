@@ -1,4 +1,7 @@
-resolver: lts-19.27
+resolver: lts-19.31
+
 packages:
   - .
-extra-deps: []
+
+extra-deps:
+  - net-mqtt-0.8.2.4@sha256:d971ef92622d1fb8b00ce365b9aab60e865dbdab4c6ee1b8c2086d754460375a,4099
