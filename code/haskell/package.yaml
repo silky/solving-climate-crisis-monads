@@ -9,6 +9,12 @@ category:            Web
 
 dependencies:
   - base >= 4.7 && < 5
+  - aeson
+  - bytestring
+  - servant
+  - servant-server
+  - text
+  - wai
 
 ghc-options:
   - -Wall
@@ -25,6 +31,7 @@ default-extensions:
   - ImportQualifiedPost
   - OverloadedStrings
   - PackageImports
+  - TypeApplications
 
 executables:
   climate-crisis-monads:
