@@ -8,12 +8,12 @@ const paho = require("paho-mqtt");
 
 export default function() {
   const client = new paho.Client("localhost", 1884, "", "js");
-  client.onMessageArrived = function (msg) {
-    // console.log("msg: ", msg.payloadString);
+  client.onMessageArrived = (msg) => {
+    console.log("msg: ", msg.payloadString);
   };
   client.connect({
-    onSuccess: function () {
-      // console.log("Connected.");
+    onSuccess: () => {
+      console.log("Connected.");
       client.subscribe("earth");
     }
   });
