@@ -30,9 +30,8 @@ export default class FlameCore {
     this.obj = new THREE.Mesh(geometry, material);
   }
 
-  render(props) {
-    const t= props["step"];
-    this.uniforms.t.value = t;
+  render(step) {
+    this.uniforms.t.value = step;
     this.obj.rotation.y += 0.002;
   }
 }

@@ -17,6 +17,7 @@ sendAll mc xs
       sleep 2
       send mc i
 
+
 main :: IO ()
 main = do
   let rs :: [Double]

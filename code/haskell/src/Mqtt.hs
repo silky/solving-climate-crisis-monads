@@ -1,15 +1,15 @@
 module Mqtt where
 
+import Control.Exception (bracket)
 import Data.Aeson (ToJSON, encode)
 import Data.Maybe (fromMaybe)
 import Network.MQTT.Client
-  ( connectURI
+  ( MQTTClient
+  , connectURI
   , mqttConfig
-  , publish
   , normalDisconnect
-  , MQTTClient
+  , publish
   )
-import Control.Exception (bracket)
 import Network.URI (URI, parseURI)
 
 uri :: URI

@@ -30,8 +30,7 @@ export default class FlameCylinder {
 
     this.obj = new THREE.Mesh(geometry, material);
   }
-  render(props) {
-    const step = props["step"];
+  render(step) {
 
     // step = 0 - good
     // step = >0.3 start burning

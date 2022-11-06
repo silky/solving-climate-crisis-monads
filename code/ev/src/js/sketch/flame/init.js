@@ -5,9 +5,26 @@ const FlameCore = require('./FlameCore').default;
 const FlameCylinder = require('./FlameCylinder').default;
 const BackgroundSphere = require('./BackgroundSphere').default;
 const paho = require("paho-mqtt");
+const { GUI } = require('lil-gui');
 
 export default function() {
   var step = 0;
+
+  const props =
+    { "Step": 0.0
+    , "MQTT": false
+    , "Resources": 0,
+    }
+  const gui = new GUI();
+
+  const admin = gui.addFolder("~ Admin ~");
+  const stepThing = admin.add( props, "Step", 0, 1, 0.01 );
+  const mqttThing = admin.add( props, "MQTT" );
+  mqttThing.disable(true);
+  admin.close();
+
+  const earth = gui.addFolder("~ Earth ~");
+  earth.add( props, "Resources", 0, 100, 1 );
 
   const resolution = new THREE.Vector2();
   const mousemove = new THREE.Vector2();
@@ -20,7 +37,6 @@ export default function() {
 
   var flameAdded = false;
 
-  const props = {}
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera
     ( 50
@@ -34,20 +50,21 @@ export default function() {
   const background = new BackgroundSphere();
 
   const render = () => {
-    flameCore.render(props);
+    const step = props["Step"];
+    flameCore.render(step);
 
-    if( !flameAdded && props["step"] > 0.3 ) {
+    if( !flameAdded && step > 0.3 ) {
       scene.add(flameCylinder.obj);
       flameAdded = true;
     }
 
-    if( flameAdded && props["step"] <= 0.3 ) {
+    if( flameAdded && step <= 0.3 ) {
       scene.remove(flameCylinder.obj);
       flameAdded = false;
     }
 
     if (flameAdded) {
-      flameCylinder.render(props);
+      flameCylinder.render(step);
     }
 
     controls.update();
@@ -82,20 +99,20 @@ export default function() {
     client.onMessageArrived = (msg) => {
       let str = msg.payloadString;
       let v   = parseFloat(str);
-      props["step"] = v ? v : 0.0;
-      console.log("props", props);
+      props["Step"] = v ? v : 0.0;
+      stepThing.setValue(v);
     };
 
     client.connect({
       onSuccess: () => {
-        console.log("Connected.");
+        mqttThing.setValue(true);
         client.subscribe("earth");
       }
     });
 
 
     controls.enableDamping = true;
-    controls.minDistance = 1;
+    controls.minDistance = 700;
     controls.maxDistance = 3000;
     controls.minZoom = 30;
 
