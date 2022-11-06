@@ -4,11 +4,20 @@ const { OrbitControls } = require('three/examples/jsm/controls/OrbitControls');
 const FlameCore = require('./FlameCore').default;
 const FlameCylinder = require('./FlameCylinder').default;
 const BackgroundSphere = require('./BackgroundSphere').default;
+const paho = require("paho-mqtt");
 
 export default function() {
-  // ==========
-  // Define common variables
-  //
+  const client = new paho.Client("localhost", 1884, "", "js");
+  client.onMessageArrived = function (msg) {
+    // console.log("msg: ", msg.payloadString);
+  };
+  client.connect({
+    onSuccess: function () {
+      // console.log("Connected.");
+      client.subscribe("earth");
+    }
+  });
+
   const resolution = new THREE.Vector2();
   const mousemove = new THREE.Vector2();
   const canvas = document.getElementById('canvas-webgl');

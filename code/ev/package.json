@@ -47,6 +47,7 @@
     "@ykob/glsl-util": "^1.1.0",
     "@ykob/js-util": "^2.0.0",
     "glsl-noise": "0.0.0",
+    "paho-mqtt": "^1.1.0",
     "three": "^0.128.0"
   }
 }

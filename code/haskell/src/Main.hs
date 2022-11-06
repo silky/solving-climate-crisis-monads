@@ -1,7 +1,8 @@
 module Main where
 
-import "warp" Network.Wai.Handler.Warp (run)
-import Server (app)
+import Mqtt (send)
 
 main :: IO ()
-main = run 8080 $ app
+main = do
+  send (1.0 :: Double)
+  send (2.0 :: Double)

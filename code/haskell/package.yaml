@@ -11,14 +11,9 @@ dependencies:
   - base >= 4.7 && < 5
   - aeson
   - bytestring
-  - servant
-  - servant-server
-  - servant-websockets
-  - text
-  - wai
-  - warp
-  - websockets
   - net-mqtt
+  - network-uri
+  - text
 
 ghc-options:
   - -Wall
@@ -44,3 +39,5 @@ executables:
   climate-crisis-monads:
     source-dirs:      src
     main:             Main.hs
+    ghc-options:
+      - -threaded
