@@ -33,8 +33,9 @@ export default class FlameCore {
     this.clock.start();
   }
 
-  render(time) {
-    const t = Math.min(1, this.clock.getElapsedTime() / 10);
+  render(props) {
+    // const t = Math.min(1, this.clock.getElapsedTime() / 10);
+    const t= props["step"];
     this.uniforms.t.value = t;
     this.obj.rotation.y += 0.002;
   }

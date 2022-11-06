@@ -34,13 +34,23 @@ export default class FlameCylinder {
     // Create Object3D
     this.obj = new THREE.Mesh(geometry, material);
   }
-  render(time) {
-    var elapsed = this.clock.getElapsedTime();
-    let t = Math.min(1, (elapsed - 3) / 10);
+  render(props) {
+    const step = props["step"];
 
-    var opacityFactor = elapsed > 3 ? 0.5 * t : 0.0;
+    // step = 0 - good
+    // step = >0.3 start burning
+    // step = 1 - very bad
+
+
+    // var elapsed = this.clock.getElapsedTime();
+    // let t = Math.min(1, (elapsed - 3) / 10);
+    let t = step - 0.3;
+
+    // var opacityFactor = step > 3 ? 0.5 * t : 0.0;
+    // var opacityFactor = time > 0.3 ? 0.5 * t : 0.0;
+    var opacityFactor = 1 * ( t / 0.7 ); // time > 0.3 ? 0.5 * t : 0.0;
 
     this.uniforms.opacityFactor.value = opacityFactor;
-    this.uniforms.time.value += time;
+    this.uniforms.time.value += this.clock.getDelta();
   }
 }

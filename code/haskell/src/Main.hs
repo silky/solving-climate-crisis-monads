@@ -1,8 +1,25 @@
 module Main where
 
-import Mqtt (send)
+-- mosquitto_pub -t 'earth' -m '100'
+
+import Mqtt (send, withMqtt)
+import Control.Monad (forM_)
+import Control.Concurrent (threadDelay)
+import Network.MQTT.Client (MQTTClient)
+
+sleep :: Int -> IO ()
+sleep n = threadDelay (10_000 * n)
+
+
+sendAll :: MQTTClient -> [Double] -> IO ()
+sendAll mc xs
+  = forM_  xs $ \i -> do
+      sleep 2
+      send mc i
 
 main :: IO ()
 main = do
-  send (1.0 :: Double)
-  send (2.0 :: Double)
+  let rs :: [Double]
+      rs = [ 0.005 * k | k <- [0 .. (1 / 0.005)] ]
+
+  withMqtt $ \mc -> do sendAll mc rs

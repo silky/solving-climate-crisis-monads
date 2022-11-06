@@ -30,6 +30,7 @@ default-extensions:
   - DeriveGeneric
   - DerivingStrategies
   - ImportQualifiedPost
+  - NumericUnderscores
   - OverloadedStrings
   - PackageImports
   - TypeApplications

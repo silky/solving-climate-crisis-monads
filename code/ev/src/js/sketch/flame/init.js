@@ -7,16 +7,7 @@ const BackgroundSphere = require('./BackgroundSphere').default;
 const paho = require("paho-mqtt");
 
 export default function() {
-  const client = new paho.Client("localhost", 1884, "", "js");
-  client.onMessageArrived = (msg) => {
-    console.log("msg: ", msg.payloadString);
-  };
-  client.connect({
-    onSuccess: () => {
-      console.log("Connected.");
-      client.subscribe("earth");
-    }
-  });
+  var step = 0;
 
   const resolution = new THREE.Vector2();
   const mousemove = new THREE.Vector2();
@@ -28,6 +19,8 @@ export default function() {
   });
 
   var flameAdded = false;
+
+  const props = {}
 
   const scene = new THREE.Scene();
   const clock = new THREE.Clock();
@@ -51,18 +44,23 @@ export default function() {
   // Define functions
   //
   const render = () => {
-    const time = clock.getDelta();
-    flameCore.render(time);
+    // const time = clock.getDelta();
+    flameCore.render(props);
 
     const elapsed = clock.getElapsedTime();
 
-    if( !flameAdded && elapsed > 0 ) {
+    if( !flameAdded && props["step"] > 0.3 ) {
       scene.add(flameCylinder.obj);
       flameAdded = true;
     }
 
+    if( flameAdded && props["step"] <= 0.3 ) {
+      scene.remove(flameCylinder.obj);
+      flameAdded = false;
+    }
+
     if (flameAdded) {
-      flameCylinder.render(time);
+      flameCylinder.render(props);
     }
 
     controls.update();
@@ -91,6 +89,23 @@ export default function() {
   // Initialize
   //
   const init = () => {
+    const client = new paho.Client("localhost", 1884, "", "js");
+
+    client.onMessageArrived = (msg) => {
+      let str = msg.payloadString;
+      let v   = parseFloat(str);
+      props["step"] = v ? v : 0.0;
+      console.log("props", props);
+    };
+
+    client.connect({
+      onSuccess: () => {
+        console.log("Connected.");
+        client.subscribe("earth");
+      }
+    });
+
+
     controls.enableDamping = true;
     controls.minDistance = 1;
     controls.maxDistance = 3000;
