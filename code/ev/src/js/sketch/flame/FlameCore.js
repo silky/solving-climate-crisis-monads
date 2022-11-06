@@ -1,5 +1,4 @@
 const THREE = require('three');
-const { MathEx } = require('@ykob/js-util');
 
 export default class FlameCore {
   constructor() {
@@ -17,7 +16,6 @@ export default class FlameCore {
         value: 0
       }
     };
-    this.clock = new THREE.Clock();
   }
 
   createObj() {
@@ -30,11 +28,9 @@ export default class FlameCore {
     });
 
     this.obj = new THREE.Mesh(geometry, material);
-    this.clock.start();
   }
 
   render(props) {
-    // const t = Math.min(1, this.clock.getElapsedTime() / 10);
     const t= props["step"];
     this.uniforms.t.value = t;
     this.obj.rotation.y += 0.002;

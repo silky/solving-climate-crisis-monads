@@ -21,9 +21,7 @@ export default function() {
   var flameAdded = false;
 
   const props = {}
-
   const scene = new THREE.Scene();
-  const clock = new THREE.Clock();
   const camera = new THREE.PerspectiveCamera
     ( 50
     , document.body.clientWidth / document.body.innerHeight
@@ -31,23 +29,12 @@ export default function() {
     , 50000
     );
   const controls = new OrbitControls(camera, renderer.domElement);
-
-  // ==========
-  // Define unique variables
-  //
-
   const flameCore = new FlameCore();
   const flameCylinder = new FlameCylinder();
   const background = new BackgroundSphere();
 
-  // ==========
-  // Define functions
-  //
   const render = () => {
-    // const time = clock.getDelta();
     flameCore.render(props);
-
-    const elapsed = clock.getElapsedTime();
 
     if( !flameAdded && props["step"] > 0.3 ) {
       scene.add(flameCylinder.obj);
@@ -66,14 +53,17 @@ export default function() {
     controls.update();
     renderer.render(scene, camera);
   };
+
   const renderLoop = () => {
     render();
     requestAnimationFrame(renderLoop);
   };
+
   const resizeCamera = () => {
     camera.aspect = resolution.x / resolution.y;
     camera.updateProjectionMatrix();
   };
+
   const resizeWindow = () => {
     resolution.set(document.body.clientWidth, window.innerHeight);
     canvas.width = resolution.x;
@@ -81,13 +71,11 @@ export default function() {
     resizeCamera();
     renderer.setSize(resolution.x, resolution.y);
   };
+
   const on = () => {
     window.addEventListener('resize', debounce(resizeWindow, 1000));
   };
 
-  // ==========
-  // Initialize
-  //
   const init = () => {
     const client = new paho.Client("localhost", 1884, "", "js");
 
@@ -121,7 +109,6 @@ export default function() {
     scene.add(background.obj);
 
     renderer.setClearColor(0xffffff, 0);
-    clock.start();
 
     on();
     resizeWindow();

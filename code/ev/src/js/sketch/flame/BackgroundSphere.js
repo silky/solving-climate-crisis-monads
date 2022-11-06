@@ -1,5 +1,4 @@
 const THREE = require('three');
-const { MathEx } = require('@ykob/js-util');
 
 export default class backgroundSphere {
   constructor() {
