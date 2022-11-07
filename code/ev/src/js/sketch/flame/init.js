@@ -94,7 +94,7 @@ export default function() {
   };
 
   const init = () => {
-    const client = new paho.Client("localhost", 1884, "", "js");
+    const client = new paho.Client("localhost", 1884, "", "js" + Math.random());
 
     client.onMessageArrived = (msg) => {
       let str = msg.payloadString;
