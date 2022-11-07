@@ -1,6 +1,6 @@
 @mixin fontSize($size: 14) {
   font-size: $size + px;
-  font-size: $size / 16 * 1rem;
+  font-size: calc($size / 16 * 1rem);
 }
 @mixin clearfix {
   &:before,
