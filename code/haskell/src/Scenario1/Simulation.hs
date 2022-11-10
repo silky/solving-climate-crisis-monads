@@ -3,10 +3,12 @@
 
 module Scenario1.Simulation where
 
+import "aeson" Data.Aeson (Object)
+import "data-default" Data.Default (Default, def)
+import "base" Data.Monoid (Sum (Sum))
 import Scenario1.Model
 import Scenario1.Types
-import "base" Data.Monoid (Sum(Sum))
-import "data-default" Data.Default (Default, def)
+
 
 -- Below we pay the price for not modelling our domain properly; we define a
 -- bunch of orphan instances.
@@ -44,14 +46,22 @@ spin World{resources, businesses, outputs} =
 
 
 
+data EarthUpdate = EarthUpdate
+  { step :: Double
+  , blob :: Object
+  }
 
 -- toMqtt :: World -> Double
 -- toMqtt World{resources} =
---   fromInteger (getSum resources / 100)
+--   1 - fromInteger (getSum resources / initialResources)
+
+
+initialResources :: Integer
+initialResources = 100
 
 
 initialWorld :: World
-initialWorld = World (Sum 100) businesses []
+initialWorld = World (Sum initialResources) businesses []
   where
     businesses
       = [ SomeBusiness "flora's flowers" florist
@@ -59,8 +69,6 @@ initialWorld = World (Sum 100) businesses []
         ]
 
 
--- import Types.Common
---
 -- simulate :: Int -> World -> IO ()
 -- simulate n world = do
 --   withMqtt $ \mc -> do

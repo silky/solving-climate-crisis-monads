@@ -30,7 +30,10 @@ default-extensions:
   - DataKinds
   - DeriveGeneric
   - DerivingStrategies
+  - FlexibleContexts
+  - GADTs
   - ImportQualifiedPost
+  - NamedFieldPuns
   - NumericUnderscores
   - OverloadedStrings
   - PackageImports
