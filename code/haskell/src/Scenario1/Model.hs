@@ -6,11 +6,9 @@
 
 module Scenario1.Model where
 
-import "base" Control.Monad (foldM, void)
-import "data-default" Data.Default (Default, def)
+import "data-default" Data.Default (def)
 import "base" Data.Monoid (Sum (..))
 import Scenario1.Types
-
 
 data Plants  = Plant
 data Flowers = Flower
@@ -31,6 +29,3 @@ cost' (SomeBusiness _ (_ :: a -> b)) = cost @(a -> b)
 
 output :: SomeBusiness -> BusinessOutput
 output (SomeBusiness _ (f :: a -> b)) = BusinessOutput $ f (def @a)
-
-
-

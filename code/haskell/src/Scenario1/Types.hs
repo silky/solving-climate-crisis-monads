@@ -2,19 +2,22 @@
 
 module Scenario1.Types where
 
-import "base" Data.Monoid (Sum (..))
-
 import "text" Data.Text (Text)
-import "base" Data.Monoid (Sum (..))
+import "base" Data.Monoid (Sum)
 import "data-default" Data.Default (Default)
 
 
+-- | Our initial guess at a  world consists:
+--    - Some resources.
+--    - A list of businesses.
+--    - A collection of business outputs.
 data World = World
   { resources  :: Sum Integer
   , businesses :: [SomeBusiness]
   , outputs    :: [BusinessOutput]
   }
-  deriving (Show)
+  deriving Show
+
 
 -- type SpontaneouslyConstruct = Default
 
