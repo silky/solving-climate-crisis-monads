@@ -2,14 +2,10 @@ module Main where
 
 -- mosquitto_pub -t 'earth' -m '100'
 
-import "base" Control.Concurrent (threadDelay)
 import "base" Control.Monad (forM_)
+import Misc (sleep)
 import Mqtt (send, withMqtt)
 import "net-mqtt" Network.MQTT.Client (MQTTClient)
-
-
-sleep :: Int -> IO ()
-sleep n = threadDelay (10_000 * n)
 
 
 sendAll :: MQTTClient -> [Double] -> IO ()

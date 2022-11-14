@@ -24,7 +24,7 @@ export default function() {
   admin.close();
 
   const earth = gui.addFolder("~ Earth ~");
-  earth.add( props, "Resources", 0, 100, 1 );
+  const resources = earth.add( props, "Resources", 0, 100, 1 );
 
   const resolution = new THREE.Vector2();
   const mousemove = new THREE.Vector2();
@@ -98,7 +98,15 @@ export default function() {
 
     client.onMessageArrived = (msg) => {
       let str = msg.payloadString;
-      let v   = parseFloat(str);
+      let obj = JSON.parse(str);
+      console.log("Data over the wire: ");
+      console.log(obj);
+
+      let v = obj["step"];
+
+      props["Resources"] = obj["blob"]["Resources"];
+      resources.setValue(props["Resources"]);
+
       props["Step"] = v ? v : 0.0;
       stepThing.setValue(v);
     };

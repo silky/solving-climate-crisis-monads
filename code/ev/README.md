@@ -5,3 +5,16 @@ Kobayashi](http://www.tplh.net/)'s beautiful
 [sketch-threejs](http://ykob.github.io/sketch-threejs/) repository.
 
 Horrible hacking is due to myself.
+
+### Installing
+
+```
+npm install
+```
+
+
+### Running
+
+```
+npm run dev
+```

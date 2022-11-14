@@ -3,9 +3,14 @@
 
 module Scenario1.Simulation where
 
-import "aeson" Data.Aeson (Object)
+import "base" Control.Monad (foldM, void)
+import "aeson" Data.Aeson (Value(Number), Object, ToJSON)
+import "aeson" Data.Aeson.KeyMap (fromList)
 import "data-default" Data.Default (Default, def)
-import "base" Data.Monoid (Sum (Sum))
+import "base" Data.Monoid (Sum (..))
+import "base" GHC.Generics (Generic)
+import Misc (sleep)
+import Mqtt (send, withMqtt)
 import Scenario1.Model
 import Scenario1.Types
 
@@ -50,10 +55,14 @@ data EarthUpdate = EarthUpdate
   { step :: Double
   , blob :: Object
   }
+  deriving (Generic, Show, ToJSON)
 
--- toMqtt :: World -> Double
--- toMqtt World{resources} =
---   1 - fromInteger (getSum resources / initialResources)
+
+toMqtt :: World -> EarthUpdate
+toMqtt World{resources} = EarthUpdate
+  { step = 1 - fromInteger (getSum resources) / (fromInteger initialResources)
+  , blob = fromList [("Resources", Number $ fromInteger $ getSum resources)]
+  }
 
 
 initialResources :: Integer
@@ -69,12 +78,17 @@ initialWorld = World (Sum initialResources) businesses []
         ]
 
 
--- simulate :: Int -> World -> IO ()
--- simulate n world = do
---   withMqtt $ \mc -> do
---     void $ foldM (f mc) world [1 .. n]
---   where
---     f w _ = do
---       let w' = spin w
---       send mc (toMqtt w)
---       pure w'
+simulate :: World -> Int -> Int -> IO ()
+simulate world n delay = do
+  withMqtt $ \mc -> do
+    void $ foldM (step mc) world [1 .. n]
+  where
+    step mc w _ = do
+      let w' = spin w
+      send mc (toMqtt w)
+      sleep delay
+      pure w'
+
+
+scenario1 :: IO ()
+scenario1 = simulate initialWorld 51 20
