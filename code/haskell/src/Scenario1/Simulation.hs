@@ -61,7 +61,6 @@ spin World{resources, businesses, outputs} =
 
 -- We can now define an initial world state, and simulate it.
 
-
 initialWorld :: World
 initialWorld = World (Sum initialResources) businesses []
   where
@@ -72,7 +71,6 @@ initialWorld = World (Sum initialResources) businesses []
 
 initialResources :: Integer
 initialResources = 100
-
 
 
 data EarthUpdate = EarthUpdate
@@ -89,7 +87,6 @@ toMqtt World{resources,outputs} = EarthUpdate
                     , ("Business Outputs", Number $ fromInteger $ toInteger $ length $ outputs)
                     ]
   }
-
 
 
 simulate :: World -> Int -> Int -> IO ()
