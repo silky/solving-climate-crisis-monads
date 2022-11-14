@@ -99,8 +99,6 @@ export default function() {
     client.onMessageArrived = (msg) => {
       let str = msg.payloadString;
       let obj = JSON.parse(str);
-      console.log("Data over the wire: ");
-      console.log(obj);
 
       let v = obj["step"];
 
