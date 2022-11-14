@@ -13,8 +13,10 @@ export default function() {
   const props =
     { "Step": 0.0
     , "MQTT": false
-    , "Resources": 0,
+    // , "Resources": 0,
     }
+  const propHandles = {};
+
   const gui = new GUI();
 
   const admin = gui.addFolder("~ Admin ~");
@@ -24,7 +26,7 @@ export default function() {
   admin.close();
 
   const earth = gui.addFolder("~ Earth ~");
-  const resources = earth.add( props, "Resources", 0, 100, 1 );
+  // const resources = earth.add( props, "Resources", 0, 100, 1 );
 
   const resolution = new THREE.Vector2();
   const mousemove = new THREE.Vector2();
@@ -102,8 +104,20 @@ export default function() {
 
       let v = obj["step"];
 
-      props["Resources"] = obj["blob"]["Resources"];
-      resources.setValue(props["Resources"]);
+      var keys = Object.keys( obj["blob"] );
+
+      keys.forEach( key => {
+        let value = obj["blob"][key];
+
+        props[key] = value;
+
+        if( !(key in propHandles) ) {
+          // TODO: User-definable max.
+          propHandles[key] = earth.add(props, key, 0, 100, 1 );
+        }
+
+        propHandles[key].setValue(value);
+      });
 
       props["Step"] = v ? v : 0.0;
       stepThing.setValue(v);

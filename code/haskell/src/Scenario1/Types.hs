@@ -19,8 +19,6 @@ data World = World
   deriving Show
 
 
--- type SpontaneouslyConstruct = Default
-
 -- | What _is_ a business? Well, in our limited and somewhat disconnected
 -- model, we know it's a function a -> b, we know it has a cost, and we allow
 -- ourselves the ability to materialise an input for it at will. This is not

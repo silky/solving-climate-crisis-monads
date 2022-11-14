@@ -34,6 +34,15 @@ instance Default Milk where
   def = Oat
 
 
+cost' :: SomeBusiness -> Sum Integer
+cost' (SomeBusiness _ (_ :: a -> b)) = cost @(a -> b)
+
+
+output :: SomeBusiness -> BusinessOutput
+output (SomeBusiness _ (f :: a -> b)) = BusinessOutput $ f (def @a)
+
+
+
 -- | Every time the world spins, the following events occur:
 --    - Businesses produce outputs.
 --    - The amount of resources reduces precisely by the cost of operating businesses.
@@ -50,7 +59,6 @@ spin World{resources, businesses, outputs} =
     newOutputs    = map output businesses
 
 
-
 data EarthUpdate = EarthUpdate
   { step :: Double
   , blob :: Object
@@ -59,9 +67,11 @@ data EarthUpdate = EarthUpdate
 
 
 toMqtt :: World -> EarthUpdate
-toMqtt World{resources} = EarthUpdate
+toMqtt World{resources,outputs} = EarthUpdate
   { step = 1 - fromInteger (getSum resources) / (fromInteger initialResources)
-  , blob = fromList [("Resources", Number $ fromInteger $ getSum resources)]
+  , blob = fromList [ ("Resources", Number $ fromInteger $ getSum resources)
+                    , ("Business Outputs", Number $ fromInteger $ toInteger $ length $ outputs)
+                    ]
   }
 
 
