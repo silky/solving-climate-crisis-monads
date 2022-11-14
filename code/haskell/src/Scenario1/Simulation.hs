@@ -1,4 +1,3 @@
-{-# language FlexibleInstances #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
 module Scenario1.Simulation where
@@ -34,14 +33,6 @@ instance Default Milk where
   def = Oat
 
 
-cost' :: SomeBusiness -> Sum Integer
-cost' (SomeBusiness _ (_ :: a -> b)) = cost @(a -> b)
-
-
-output :: SomeBusiness -> BusinessOutput
-output (SomeBusiness _ (f :: a -> b)) = BusinessOutput $ f (def @a)
-
-
 
 -- | Every time the world spins, the following events occur:
 --    - Businesses produce outputs.
@@ -51,12 +42,37 @@ spin :: World -> World
 spin World{resources, businesses, outputs} =
   World
     { resources  = resources - resourceCosts
-    , businesses = businesses
     , outputs    = newOutputs ++ outputs
+    , businesses = businesses
     }
   where
     resourceCosts = foldMap cost' businesses
     newOutputs    = map output businesses
+
+    -- Because of the way our representation works, we need to pattern-match to
+    -- call our functions at the right type.
+
+    cost' :: SomeBusiness -> Sum Integer
+    cost' (SomeBusiness _ (_ :: a -> b)) = cost @(a -> b)
+
+    output :: SomeBusiness -> BusinessOutput
+    output (SomeBusiness _ (f :: a -> b)) = BusinessOutput $ f (def @a)
+
+
+-- We can now define an initial world state, and simulate it.
+
+
+initialWorld :: World
+initialWorld = World (Sum initialResources) businesses []
+  where
+    businesses
+      = [ SomeBusiness "flora's flowers" florist
+        , SomeBusiness "haskell cafe"    cafe
+        ]
+
+initialResources :: Integer
+initialResources = 100
+
 
 
 data EarthUpdate = EarthUpdate
@@ -74,18 +90,6 @@ toMqtt World{resources,outputs} = EarthUpdate
                     ]
   }
 
-
-initialResources :: Integer
-initialResources = 100
-
-
-initialWorld :: World
-initialWorld = World (Sum initialResources) businesses []
-  where
-    businesses
-      = [ SomeBusiness "flora's flowers" florist
-        , SomeBusiness "haskell cafe"    cafe
-        ]
 
 
 simulate :: World -> Int -> Int -> IO ()

@@ -1,8 +1,3 @@
-{-# language FlexibleInstances   #-}
-{-# language NamedFieldPuns      #-}
-{-# language FlexibleContexts    #-}
-{-# language StandaloneDeriving  #-}
-
 module Scenario1.Model where
 
 data Plants  = Plant
@@ -18,5 +13,3 @@ data Coffee = Latte | Cappuccino
 
 cafe :: (Beans, Milk) -> Coffee
 cafe = const Latte
-
-

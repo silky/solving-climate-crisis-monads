@@ -28,19 +28,20 @@ ghc-options:
 
 default-extensions:
   - DataKinds
-  - DeriveGeneric
   - DeriveAnyClass
+  - DeriveGeneric
   - DerivingStrategies
   - FlexibleContexts
+  - FlexibleInstances
   - GADTs
   - ImportQualifiedPost
   - NamedFieldPuns
   - NumericUnderscores
   - OverloadedStrings
   - PackageImports
+  - ScopedTypeVariables
   - TypeApplications
   - TypeOperators
-  - ScopedTypeVariables
 
 executables:
   climate-crisis-monads:
