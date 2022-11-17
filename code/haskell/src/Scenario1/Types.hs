@@ -7,22 +7,10 @@ import "base" Data.Monoid (Sum)
 import "data-default" Data.Default (Default)
 
 
--- | Our initial guess at a  world consists:
---    - Some resources.
---    - A list of businesses.
---    - A collection of business outputs.
-data World = World
-  { resources  :: Sum Integer
-  , businesses :: [SomeBusiness]
-  , outputs    :: [BusinessOutput]
-  }
-  deriving Show
-
-
 -- | What _is_ a business? Well, in our limited and somewhat disconnected
--- model, we know it's a function a -> b, we know it has a cost, and we allow
--- ourselves the ability to materialise an input for it at will. This is not
--- particularly physically realistic ...
+-- model, we know it's a function a -> b, we can let it have a name; we
+-- suppose it has a cost, and we allow ourselves the ability to materialise an
+-- input for it at will. This is not particularly physically realistic ...
 data SomeBusiness
   = forall a b
    . ( Default a
@@ -35,6 +23,18 @@ data SomeBusiness
 data BusinessOutput = forall b. BusinessOutput b
 
 
+-- | Our initial guess at a  world consists:
+--    - Some resources.
+--    - A list of businesses.
+--    - A collection of business outputs.
+data World = World
+  { resources  :: Sum Integer
+  , businesses :: [SomeBusiness]
+  , outputs    :: [BusinessOutput]
+  }
+  deriving Show
+
+
 -- | What do businesses produce in this world? Why, Arbitrary Business Output,
 -- of course!
 instance Show BusinessOutput where
@@ -43,7 +43,7 @@ instance Show BusinessOutput where
 
 -- | All we know about a business, really, is it's name.
 instance Show SomeBusiness where
-  show (SomeBusiness t _) = show $ "function <" <> t <> ">"
+  show (SomeBusiness name _) = show $ "business <" <> name <> ">"
 
 
 -- | We can compute a 'Cost' for a thing. We will focus on computing costs for

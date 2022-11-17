@@ -3,7 +3,7 @@
 module Scenario1.Simulation where
 
 import "base" Control.Monad (foldM, void)
-import "aeson" Data.Aeson (Value(Number), Object, ToJSON)
+import "aeson" Data.Aeson (Object, ToJSON, Value (Number))
 import "aeson" Data.Aeson.KeyMap (fromList)
 import "data-default" Data.Default (Default, def)
 import "base" Data.Monoid (Sum (..))
@@ -31,7 +31,6 @@ instance Default Beans where
 
 instance Default Milk where
   def = Oat
-
 
 
 -- | Every time the world spins, the following events occur:
@@ -66,12 +65,16 @@ initialWorld = World (Sum initialResources) businesses []
   where
     businesses
       = [ SomeBusiness "flora's flowers" florist
-        , SomeBusiness "haskell cafe"    cafe
+        , SomeBusiness "haskell's cafe"  cafe
         ]
+
 
 initialResources :: Integer
 initialResources = 100
 
+
+-- And here we do a bunch of busywork to send this information to the
+-- simulation engine.
 
 data EarthUpdate = EarthUpdate
   { step :: Double
@@ -103,3 +106,6 @@ simulate world n delay = do
 
 scenario1 :: IO ()
 scenario1 = simulate initialWorld 51 20
+
+reset :: IO ()
+reset = simulate initialWorld 1 1
