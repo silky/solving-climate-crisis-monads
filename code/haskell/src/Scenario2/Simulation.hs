@@ -15,11 +15,6 @@ initialWorld = World (Sum initialResources) businesses []
       = [ SomeBusiness "flora's flowers" florist
         ]
 
-instance Cost (Plants -> WorldState Flowers) where
-  cost = Sum 1
-
-instance Default Plants where
-  def = Plant
 
 spin :: World -> World
 spin w@World{resources,businesses,outputs} = undefined
