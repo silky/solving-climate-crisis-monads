@@ -13,3 +13,11 @@ florist = const . WorldState $ \w ->
     if safeToConsume w
        then (Just Flower, w)
        else (Nothing,     w)
+
+
+-- m :: Maybe Flowers
+-- m = do
+--   let f = florist Plant
+--       m = runWorld w f
+  -- f2 <- florist Plant
+  -- pure $ f2

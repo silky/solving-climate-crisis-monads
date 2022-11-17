@@ -1,12 +1,22 @@
 module Scenario2.Types
-  ( WorldState
-  , World (..)
+  ( WorldState (..)
   , Cost (..)
+  , World (..)
+  , SomeBusiness (..)
+  , BusinessOutput (..)
   )
-  where
+where
 
 import "base" Control.Monad (ap, liftM)
-import Scenario1.Types (World (..), Cost (..))
+import Scenario1.Types
+  ( Cost (..)
+  , SomeBusiness (..)
+  , World (..)
+  )
+
+
+-- | We don't know anything about business outputs.
+data BusinessOutput = forall b. BusinessOutput b
 
 -- Marco says: Try also `MaybeT (State s)`
 newtype WorldState a = WorldState { runWorld :: World -> (Maybe a, World) }
