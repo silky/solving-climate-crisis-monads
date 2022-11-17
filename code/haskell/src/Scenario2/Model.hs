@@ -6,23 +6,27 @@ import "base" Data.Monoid (Sum (..))
 import Scenario2.Types
 
 safeToConsume :: Sum Integer -> World -> Bool
-safeToConsume cost' World{resources} = resources - cost' > 70
+safeToConsume c World{resources} = resources - c > 70
 
 safelyProduce
-  :: forall p v
-   . Cost (p -> WorldState v)
-  => v
-  -> WorldState v
-safelyProduce v = WorldState $ \w ->
-  if safeToConsume (cost @(p -> WorldState v)) w
-     then (Just v,  w)
-     else (Nothing, w)
+  :: forall i o
+   . Cost (i -> WorldState o)
+  => o
+  -> WorldState o
+safelyProduce o =
+  let c = cost @(i -> WorldState o)
+   in WorldState $ \w ->
+        if safeToConsume c w
+           then (Just o,  w { resources = resources w - c
+                            , outputs   = BusinessOutput o : outputs w
+                            })
+           else (Nothing, w)
 
 data Plants  = Plant
 data Flowers = Flower
 
 florist :: Plants -> WorldState Flowers
-florist = const $ safelyProduce @Plants @_ Flower
+florist = const $ safelyProduce @Plants Flower
 
 instance Cost (Plants -> WorldState Flowers) where
   cost = Sum 1
@@ -32,7 +36,7 @@ data Milk   = Oat
 data Coffee = Latte | Cappuccino
 
 cafe :: (Beans, Milk) -> WorldState Coffee
-cafe = const $ safelyProduce @(Beans, Milk) @_ Latte
+cafe = const $ safelyProduce @(Beans, Milk) Latte
 
 instance Cost ((Beans, Milk) -> WorldState Coffee) where
   cost = Sum 1

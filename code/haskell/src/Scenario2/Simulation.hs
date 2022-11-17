@@ -8,24 +8,31 @@ import Scenario2.Model
 import Scenario2.Types
 import Scenario1.Simulation (simulate, initialResources)
 
+instance Default Plants where
+  def = Plant
+
+instance Default Beans where
+  def = Bean
+
+instance Default Milk where
+  def = Oat
+
 initialWorld :: World
 initialWorld = World (Sum initialResources) businesses []
   where
     businesses
       = [ SomeBusiness "flora's flowers" florist
+        , SomeBusiness "haskell's cafe"  cafe
         ]
 
 
 spin :: World -> World
-spin w@World{resources,businesses,outputs} = undefined
+spin w@World{businesses} = newWorld
   where
-    -- ms = map (flip runWorld w) businesses
-    -- costs = foldMap cost' businesses
+    newOutputs :: WorldState [BusinessOutput]
+    newOutputs = sequence $ map run businesses
 
-    -- cost' :: SomeBusiness -> Sum Integer
-    -- cost' (SomeBusiness _ (_ :: a -> b)) = cost @(a -> b)
+    newWorld = snd $ runWorld newOutputs w
 
-    output :: SomeBusiness -> BusinessOutput
-    output (SomeBusiness _ (f :: a -> b)) =
-      let o = f (def @a)
-       in BusinessOutput $ runWorld o w
+    run :: SomeBusiness -> WorldState BusinessOutput
+    run (SomeBusiness _ (f :: a -> WorldState b)) = BusinessOutput <$> f (def @a)

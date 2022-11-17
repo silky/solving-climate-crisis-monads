@@ -7,13 +7,26 @@ module Scenario2.Types
   )
 where
 
+import "text" Data.Text (Text)
+import "base" Data.Monoid (Sum)
+import "data-default" Data.Default (Default)
 import "base" Control.Monad (ap, liftM)
 import Scenario1.Types
   ( Cost (..)
-  , SomeBusiness (..)
-  , World (..)
   )
 
+data SomeBusiness
+  = forall a b
+   . ( Default a
+     , Cost (a -> WorldState b)
+     )
+  => SomeBusiness Text (a -> WorldState b)
+
+data World = World
+  { resources  :: Sum Integer
+  , businesses :: [SomeBusiness]
+  , outputs    :: [BusinessOutput]
+  }
 
 -- | We don't know anything about business outputs.
 data BusinessOutput = forall b. BusinessOutput b
