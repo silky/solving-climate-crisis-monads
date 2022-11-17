@@ -17,9 +17,10 @@ safelyProduce o =
   let c = cost @(i -> WorldState o)
    in WorldState $ \w ->
         if safeToConsume c w
-           then (Just o,  w { resources = resources w - c
-                            , outputs   = BusinessOutput o : outputs w
-                            })
+           then (Just o,  w )
+             -- { resources = resources w - c
+             --                , outputs   = BusinessOutput o : outputs w
+             --                })
            else (Nothing, w)
 
 data Plants  = Plant
