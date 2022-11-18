@@ -37,7 +37,7 @@ spin w@World{businesses} = newWorld
     newOutputs :: WorldState [BusinessOutput]
     newOutputs = forM businesses run
 
-    newWorld = snd $ runWorld newOutputs w
+    newWorld = snd $ runWorldState newOutputs w
 
     run :: SomeBusiness -> WorldState BusinessOutput
     run (SomeBusiness _ (f :: a -> WorldState b))

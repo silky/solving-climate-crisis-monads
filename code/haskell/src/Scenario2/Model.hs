@@ -16,7 +16,7 @@ safelyProduce
   -> WorldState output
 safelyProduce output =
   let c = cost @(input -> WorldState output)
-   in WorldState $ \w ->
+   in mkWorldState $ \w ->
         if safeToConsume c w
            then (Just output, w { resources = resources w - c
                                 , outputs   = BusinessOutput output : outputs w

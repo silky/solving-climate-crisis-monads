@@ -1,21 +1,22 @@
 module Scenario2.Types
-  ( WorldState (..)
+  ( WorldState
   , Cost (..)
   , World (..)
   , SomeBusiness (..)
   , BusinessOutput (..)
+  , mkWorldState
+  , runWorldState
   )
 where
 
 import "text" Data.Text (Text)
 import "base" Data.Monoid (Sum)
 import "data-default" Data.Default (Default)
-import "base" Control.Monad (ap, liftM)
 import Scenario1.Types
   ( Cost (..)
   )
--- import Control.Monad.Trans.State (State, runState)
--- import Control.Monad.Trans.Maybe (MaybeT, runMaybeT)
+import Control.Monad.Trans.State (State, runState, state)
+import Control.Monad.Trans.Maybe (MaybeT(..), runMaybeT)
 
 data SomeBusiness
   = forall a b
@@ -42,22 +43,10 @@ data World = World
 -- | We don't know anything about business outputs.
 data BusinessOutput = forall b. BusinessOutput b
 
--- Marco says: Try also `MaybeT (State s)`
--- type X a = MaybeT (State a)
-newtype WorldState a = WorldState { runWorld :: World -> (Maybe a, World) }
+type WorldState = MaybeT (State World)
 
-instance Functor WorldState where
-  fmap = liftM
+mkWorldState :: (World -> (Maybe a, World)) -> WorldState a
+mkWorldState f = MaybeT (state f)
 
-instance Applicative WorldState where
-  pure  = return
-  (<*>) = ap
-
-instance Monad WorldState where
-  return x = WorldState (\w -> (Just x, w))
-  p >>= k = WorldState $ \w ->
-    let (mx, w') = runWorld p w
-     in case mx of
-          Nothing -> (Nothing, w')
-          Just x  -> runWorld (k x) w'
-
+runWorldState :: WorldState a -> World -> (Maybe a, World)
+runWorldState = runState . runMaybeT

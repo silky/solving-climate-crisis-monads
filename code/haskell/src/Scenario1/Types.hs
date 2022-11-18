@@ -6,6 +6,17 @@ import "text" Data.Text (Text)
 import "base" Data.Monoid (Sum)
 import "data-default" Data.Default (Default)
 
+-- | Our initial guess at a  world consists:
+--    - Some resources.
+--    - A list of businesses.
+--    - A collection of business outputs.
+data World = World
+  { resources  :: Sum Integer
+  , businesses :: [SomeBusiness]
+  , outputs    :: [BusinessOutput]
+  }
+  deriving Show
+
 
 -- | What _is_ a business? Well, in our limited and somewhat disconnected
 -- model, we know it's a function a -> b, we can let it have a name; we
@@ -21,18 +32,6 @@ data SomeBusiness
 
 -- | We don't know anything about business outputs.
 data BusinessOutput = forall b. BusinessOutput b
-
-
--- | Our initial guess at a  world consists:
---    - Some resources.
---    - A list of businesses.
---    - A collection of business outputs.
-data World = World
-  { resources  :: Sum Integer
-  , businesses :: [SomeBusiness]
-  , outputs    :: [BusinessOutput]
-  }
-  deriving Show
 
 
 -- | What do businesses produce in this world? Why, Arbitrary Business Output,
