@@ -7,23 +7,12 @@ maintainer:          noonsilk@gmail.com
 copyright:           2022 Noon van der Silk
 category:            Web
 
-dependencies:
-  - base >= 4.7 && < 5
-  - aeson
-  - bytestring
-  - data-default
-  - net-mqtt
-  - network-uri
-  - text
-  - transformers
-
 ghc-options:
   - -Wall
   - -Wcompat
   - -Widentities
   - -Wincomplete-record-updates
   - -Wincomplete-uni-patterns
-  - -Wmissing-home-modules
   - -Wpartial-fields
   - -Wredundant-constraints
 
@@ -43,6 +32,16 @@ default-extensions:
   - ScopedTypeVariables
   - TypeApplications
   - TypeOperators
+
+dependencies:
+  - base >= 4.7 && < 5
+  - aeson
+  - bytestring
+  - data-default
+  - net-mqtt
+  - network-uri
+  - text
+  - transformers
 
 executables:
   climate-crisis-monads:
