@@ -44,10 +44,15 @@ spin w@World{businesses} = newWorld
       = BusinessOutput <$> f (def @a)
 
 
+-- TODO:
+--  [ ] Think about the model of outputs; we keep them in the return type,
+--      basically, _and_ as a list of outputs; so we're kind of duplicating them.
+--      Maybe this could be cleaned up; or maybe it's not important. Amusingly,
+--      linear types could be interesting here; but I don't think I'll do that.
 
 -- TODO:
---  - Refactor so these things can be called generally; i.e. so we're not just
---  copying-and-pasting it from Scenario1.
+--  [ ] Refactor so these things can be called generally; i.e. so we're not just
+--      copying-and-pasting it from Scenario1.
 
 
 
