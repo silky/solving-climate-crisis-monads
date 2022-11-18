@@ -46,7 +46,8 @@ spin w@World{businesses} = newWorld
 
 
 -- TODO:
---  - Refactor so these things can be called generally.
+--  - Refactor so these things can be called generally; i.e. so we're not just
+--  copying-and-pasting it from Scenario1.
 
 
 
