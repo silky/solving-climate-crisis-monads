@@ -43,7 +43,6 @@ spin w@World{businesses} = newWorld
     run (SomeBusiness _ (f :: a -> WorldState b))
       = BusinessOutput <$> f (def @a)
 
-
 -- TODO:
 --  [ ] Think about the model of outputs; we keep them in the return type,
 --      basically, _and_ as a list of outputs; so we're kind of duplicating them.
@@ -53,8 +52,6 @@ spin w@World{businesses} = newWorld
 -- TODO:
 --  [ ] Refactor so these things can be called generally; i.e. so we're not just
 --      copying-and-pasting it from Scenario1.
-
-
 
 data EarthUpdate = EarthUpdate
   { step :: Double
