@@ -2,7 +2,7 @@
 
 module Scenario2.Simulation where
 
-import "base" Control.Monad (foldM, void)
+import "base" Control.Monad (foldM, void, forM)
 import "aeson" Data.Aeson (Object, ToJSON, Value (Number))
 import "aeson" Data.Aeson.KeyMap (fromList)
 import "data-default" Data.Default (Default, def)
@@ -35,7 +35,7 @@ spin :: World -> World
 spin w@World{businesses} = newWorld
   where
     newOutputs :: WorldState [BusinessOutput]
-    newOutputs = sequence $ map run businesses
+    newOutputs = forM businesses run
 
     newWorld = snd $ runWorld newOutputs w
 

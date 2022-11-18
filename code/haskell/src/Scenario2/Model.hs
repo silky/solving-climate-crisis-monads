@@ -5,22 +5,22 @@ module Scenario2.Model where
 import "base" Data.Monoid (Sum (..))
 import Scenario2.Types
 
--- | Given some input type `i` and some output type `o`, first decide if we
--- can safely produce the output, by checking the amount of resources we would
--- need, and then produce the output and update the world, if it was indeed
--- possible to do so.
+-- | Given some input type `input` and some output type `output`, first decide
+-- if we can safely produce the output, by checking the amount of resources we
+-- would need, and then produce the output and update the world, if it was
+-- indeed possible to do so.
 safelyProduce
-  :: forall i o
-   . Cost (i -> WorldState o)
-  => o
-  -> WorldState o
-safelyProduce o =
-  let c = cost @(i -> WorldState o)
+  :: forall input output
+   . Cost (input -> WorldState output)
+  => output
+  -> WorldState output
+safelyProduce output =
+  let c = cost @(input -> WorldState output)
    in WorldState $ \w ->
         if safeToConsume c w
-           then (Just o, w { resources = resources w - c
-                           , outputs   = BusinessOutput o : outputs w
-                           })
+           then (Just output, w { resources = resources w - c
+                                , outputs   = BusinessOutput output : outputs w
+                                })
            else (Nothing, w)
 
 -- | Our safety margin.
