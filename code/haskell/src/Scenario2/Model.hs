@@ -6,7 +6,7 @@ import "base" Data.Monoid (Sum (..))
 import Scenario2.Types
 
 safeToConsume :: Sum Integer -> World -> Bool
-safeToConsume c World{resources} = resources - c > 70
+safeToConsume c World{resources} = resources - c >= 70
 
 safelyProduce
   :: forall i o
@@ -17,10 +17,9 @@ safelyProduce o =
   let c = cost @(i -> WorldState o)
    in WorldState $ \w ->
         if safeToConsume c w
-           then (Just o,  w )
-             -- { resources = resources w - c
-             --                , outputs   = BusinessOutput o : outputs w
-             --                })
+           then (Just o, w { resources = resources w - c
+                           , outputs   = BusinessOutput o : outputs w
+                           })
            else (Nothing, w)
 
 data Plants  = Plant

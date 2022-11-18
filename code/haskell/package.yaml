@@ -15,6 +15,7 @@ dependencies:
   - net-mqtt
   - network-uri
   - text
+  - transformers
 
 ghc-options:
   - -Wall

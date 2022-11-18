@@ -14,6 +14,8 @@ import "base" Control.Monad (ap, liftM)
 import Scenario1.Types
   ( Cost (..)
   )
+import Control.Monad.Trans.State (State, runState)
+import Control.Monad.Trans.Maybe (MaybeT, runMaybeT)
 
 data SomeBusiness
   = forall a b
@@ -41,6 +43,7 @@ data World = World
 data BusinessOutput = forall b. BusinessOutput b
 
 -- Marco says: Try also `MaybeT (State s)`
+-- type X a = MaybeT (State a)
 newtype WorldState a = WorldState { runWorld :: World -> (Maybe a, World) }
 
 instance Functor WorldState where
@@ -51,8 +54,10 @@ instance Applicative WorldState where
   (<*>) = ap
 
 instance Monad WorldState where
+  return x = WorldState (\w -> (Just x, w))
   p >>= k = WorldState $ \w ->
     let (mx, w') = runWorld p w
      in case mx of
           Nothing -> (Nothing, w')
           Just x  -> runWorld (k x) w'
+
