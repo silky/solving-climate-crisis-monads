@@ -6,6 +6,7 @@ module Scenario2.Types
   , BusinessOutput (..)
   , mkWorldState
   , runWorldState
+  , execWorldState
   )
 where
 
@@ -46,3 +47,6 @@ mkWorldState f = MaybeT (state f)
 
 runWorldState :: WorldState a -> World -> (Maybe a, World)
 runWorldState = runState . runMaybeT
+
+execWorldState :: WorldState a -> World -> World
+execWorldState m = snd . runWorldState m
