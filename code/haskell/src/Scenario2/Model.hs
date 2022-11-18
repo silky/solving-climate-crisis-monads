@@ -5,9 +5,10 @@ module Scenario2.Model where
 import "base" Data.Monoid (Sum (..))
 import Scenario2.Types
 
-safeToConsume :: Sum Integer -> World -> Bool
-safeToConsume c World{resources} = resources - c >= 70
-
+-- | Given some input type `i` and some output type `o`, first decide if we
+-- can safely produce the output, by checking the amount of resources we would
+-- need, and then produce the output and update the world, if it was indeed
+-- possible to do so.
 safelyProduce
   :: forall i o
    . Cost (i -> WorldState o)
@@ -21,6 +22,14 @@ safelyProduce o =
                            , outputs   = BusinessOutput o : outputs w
                            })
            else (Nothing, w)
+
+-- | Our safety margin.
+safeToConsume :: Sum Integer -> World -> Bool
+safeToConsume c World{resources} = resources - c >= 70
+
+
+-- A variation on our regular business model; we now return WorldState's and
+-- only produce things if we can do so safely.
 
 data Plants  = Plant
 data Flowers = Flower
