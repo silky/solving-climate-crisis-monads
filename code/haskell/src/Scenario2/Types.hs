@@ -25,12 +25,9 @@ data SomeBusiness
      )
   => SomeBusiness Text (a -> WorldState b)
 
--- | What do businesses produce in this world? Why, Arbitrary Business Output,
--- of course!
 instance Show BusinessOutput where
   show _ = "Arbitrary Business Output"
 
--- | All we know about a business, really, is it's name.
 instance Show SomeBusiness where
   show (SomeBusiness name _) = show $ "business <" <> name <> ">"
 
@@ -40,7 +37,6 @@ data World = World
   , outputs    :: [BusinessOutput]
   } deriving Show
 
--- | We don't know anything about business outputs.
 data BusinessOutput = forall b. BusinessOutput b
 
 type WorldState = MaybeT (State World)
