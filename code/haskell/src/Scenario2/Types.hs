@@ -10,14 +10,12 @@ module Scenario2.Types
   )
 where
 
-import "text" Data.Text (Text)
-import "base" Data.Monoid (Sum)
+import "transformers" Control.Monad.Trans.Maybe (MaybeT (..), runMaybeT)
+import "transformers" Control.Monad.Trans.State (State, runState, state)
 import "data-default" Data.Default (Default)
-import Scenario1.Types
-  ( Cost (..)
-  )
-import Control.Monad.Trans.State (State, runState, state)
-import Control.Monad.Trans.Maybe (MaybeT(..), runMaybeT)
+import "base" Data.Monoid (Sum)
+import "text" Data.Text (Text)
+import Types
 
 data SomeBusiness
   = forall a b
@@ -25,9 +23,6 @@ data SomeBusiness
      , Cost (a -> WorldState b)
      )
   => SomeBusiness Text (a -> WorldState b)
-
-instance Show BusinessOutput where
-  show _ = "Arbitrary Business Output"
 
 instance Show SomeBusiness where
   show (SomeBusiness name _) = show $ "business <" <> name <> ">"
@@ -37,8 +32,6 @@ data World = World
   , businesses :: [SomeBusiness]
   , outputs    :: [BusinessOutput]
   } deriving Show
-
-data BusinessOutput = forall b. BusinessOutput b
 
 type WorldState = MaybeT (State World)
 
