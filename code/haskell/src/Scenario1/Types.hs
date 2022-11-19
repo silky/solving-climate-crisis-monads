@@ -2,9 +2,11 @@
 
 module Scenario1.Types where
 
-import "text" Data.Text (Text)
-import "base" Data.Monoid (Sum)
 import "data-default" Data.Default (Default)
+import "base" Data.Monoid (Sum)
+import "text" Data.Text (Text)
+import Types
+
 
 -- | Our initial guess at a  world consists:
 --    - Some resources.
@@ -30,24 +32,6 @@ data SomeBusiness
   => SomeBusiness Text (a -> b)
 
 
--- | We don't know anything about business outputs.
-data BusinessOutput = forall b. BusinessOutput b
-
-
--- | What do businesses produce in this world? Why, Arbitrary Business Output,
--- of course!
-instance Show BusinessOutput where
-  show _ = "Arbitrary Business Output"
-
-
 -- | All we know about a business, really, is it's name.
 instance Show SomeBusiness where
   show (SomeBusiness name _) = show $ "business <" <> name <> ">"
-
-
--- | We can compute a 'Cost' for a thing. We will focus on computing costs for
--- businesses (i.e. things of the form a -> b). We're going to want to add
--- these up at some point, so we'll make it a `Sum` so that's a bit easier to
--- do.
-class Cost a where
-  cost :: Sum Integer

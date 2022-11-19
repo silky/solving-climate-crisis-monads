@@ -12,6 +12,7 @@ import Misc (sleep)
 import Mqtt (send, withMqtt)
 import Scenario1.Model
 import Scenario1.Types
+import Types
 
 
 -- Below we pay the price for not modelling our domain properly; we define a

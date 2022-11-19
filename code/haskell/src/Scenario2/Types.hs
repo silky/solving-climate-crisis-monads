@@ -17,6 +17,7 @@ import "base" Data.Monoid (Sum)
 import "text" Data.Text (Text)
 import Types
 
+
 data SomeBusiness
   = forall a b
    . ( Default a
@@ -24,8 +25,10 @@ data SomeBusiness
      )
   => SomeBusiness Text (a -> WorldState b)
 
+
 instance Show SomeBusiness where
   show (SomeBusiness name _) = show $ "business <" <> name <> ">"
+
 
 data World = World
   { resources  :: Sum Integer
@@ -33,13 +36,17 @@ data World = World
   , outputs    :: [BusinessOutput]
   } deriving Show
 
+
 type WorldState = MaybeT (State World)
 
+
 mkWorldState :: (World -> (Maybe a, World)) -> WorldState a
-mkWorldState f = MaybeT (state f)
+mkWorldState = MaybeT . state
+
 
 runWorldState :: WorldState a -> World -> (Maybe a, World)
 runWorldState = runState . runMaybeT
+
 
 execWorldState :: WorldState a -> World -> World
 execWorldState m = snd . runWorldState m
