@@ -1,6 +1,6 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
-module Scenario1.Simulation where
+module Scenario1_PureFunctions.Simulation where
 
 import "base" Control.Monad (foldM, void)
 import "aeson" Data.Aeson (Object, ToJSON, Value (Number))
@@ -10,8 +10,7 @@ import "base" Data.Monoid (Sum (..))
 import "base" GHC.Generics (Generic)
 import Misc (sleep)
 import Mqtt (send, withMqtt)
-import Scenario1.Model
-import Scenario1.Types
+import Scenario1_PureFunctions.Model
 import Types
 
 

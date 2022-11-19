@@ -1,9 +1,14 @@
 {-# language AllowAmbiguousTypes #-}
 
-module Scenario2.Model where
+module Scenario2_SimpleMonad.Model where
 
+import "transformers" Control.Monad.Trans.Maybe (MaybeT (..), runMaybeT)
+import "transformers" Control.Monad.Trans.State (State, runState, state)
+import "data-default" Data.Default (Default)
 import "base" Data.Monoid (Sum (..))
-import Scenario2.Types
+import "text" Data.Text (Text)
+import Types
+
 
 -- | Given some input type `input` and some output type `output`, first decide
 -- if we can safely produce the output, by checking the amount of resources we
@@ -49,3 +54,38 @@ cafe = const $ safelyProduce @(Beans, Milk) Latte
 
 instance Cost ((Beans, Milk) -> WorldState Coffee) where
   cost = Sum 1
+
+
+
+data SomeBusiness
+  = forall a b
+   . ( Default a
+     , Cost (a -> WorldState b)
+     )
+  => SomeBusiness Text (a -> WorldState b)
+
+
+instance Show SomeBusiness where
+  show (SomeBusiness name _) = show $ "business <" <> name <> ">"
+
+
+data World = World
+  { resources  :: Sum Integer
+  , businesses :: [SomeBusiness]
+  , outputs    :: [BusinessOutput]
+  } deriving Show
+
+
+type WorldState = MaybeT (State World)
+
+
+mkWorldState :: (World -> (Maybe a, World)) -> WorldState a
+mkWorldState = MaybeT . state
+
+
+runWorldState :: WorldState a -> World -> (Maybe a, World)
+runWorldState = runState . runMaybeT
+
+
+execWorldState :: WorldState a -> World -> World
+execWorldState m = snd . runWorldState m

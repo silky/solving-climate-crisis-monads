@@ -1,8 +1,8 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
-module Scenario2.Simulation where
+module Scenario2_SimpleMonad.Simulation where
 
-import "base" Control.Monad (foldM, void, forM)
+import "base" Control.Monad (foldM, forM, void)
 import "aeson" Data.Aeson (Object, ToJSON, Value (Number))
 import "aeson" Data.Aeson.KeyMap (fromList)
 import "data-default" Data.Default (Default, def)
@@ -10,9 +10,9 @@ import "base" Data.Monoid (Sum (..))
 import "base" GHC.Generics (Generic)
 import Misc (sleep)
 import Mqtt (send, withMqtt)
-import Scenario1.Simulation (initialResources)
-import Scenario2.Model
-import Scenario2.Types
+import Scenario1_PureFunctions.Simulation (initialResources)
+import Scenario2_SimpleMonad.Model
+import Types
 
 instance Default Plants where
   def = Plant
