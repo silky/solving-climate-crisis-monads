@@ -39,22 +39,26 @@ safeToConsume c World{resources} = resources - c >= 70
 data Plants  = Plant
 data Flowers = Flower
 
+
 florist :: Plants -> WorldState Flowers
 florist = const $ safelyProduce @Plants Flower
 
+
 instance Cost (Plants -> WorldState Flowers) where
   cost = Sum 1
+
 
 data Beans  = Bean
 data Milk   = Oat
 data Coffee = Latte | Cappuccino
 
+
 cafe :: (Beans, Milk) -> WorldState Coffee
 cafe = const $ safelyProduce @(Beans, Milk) Latte
 
+
 instance Cost ((Beans, Milk) -> WorldState Coffee) where
   cost = Sum 1
-
 
 
 data SomeBusiness
@@ -74,6 +78,7 @@ data World = World
   , businesses :: [SomeBusiness]
   , outputs    :: [BusinessOutput]
   } deriving Show
+
 
 
 type WorldState = MaybeT (State World)

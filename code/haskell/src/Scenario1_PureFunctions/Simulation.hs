@@ -2,15 +2,12 @@
 
 module Scenario1_PureFunctions.Simulation where
 
-import "base" Control.Monad (foldM, void)
-import "aeson" Data.Aeson (Object, ToJSON, Value (Number))
+import "aeson" Data.Aeson (Value (Number))
 import "aeson" Data.Aeson.KeyMap (fromList)
 import "data-default" Data.Default (Default, def)
 import "base" Data.Monoid (Sum (..))
-import "base" GHC.Generics (Generic)
-import Misc (sleep)
-import Mqtt (send, withMqtt)
 import Scenario1_PureFunctions.Model
+import Simulation
 import Types
 
 
@@ -61,7 +58,7 @@ spin World{resources, businesses, outputs} =
 -- We can now define an initial world state, and simulate it.
 
 initialWorld :: World
-initialWorld = World (Sum initialResources) businesses []
+initialWorld = World (Sum startingResources) businesses []
   where
     businesses
       = [ SomeBusiness "flora's flowers" florist
@@ -69,43 +66,20 @@ initialWorld = World (Sum initialResources) businesses []
         ]
 
 
-initialResources :: Integer
-initialResources = 100
 
-
--- And here we do a bunch of busywork to send this information to the
--- simulation engine.
-
-data EarthUpdate = EarthUpdate
-  { step :: Double
-  , blob :: Object
-  }
-  deriving (Generic, Show, ToJSON)
-
-
-toMqtt :: World -> EarthUpdate
-toMqtt World{resources,outputs} = EarthUpdate
-  { step = 1 - fromInteger (getSum resources) / (fromInteger initialResources)
-  , blob = fromList [ ("Resources", Number $ fromInteger $ getSum resources)
-                    , ("Business Outputs", Number $ fromInteger $ toInteger $ length $ outputs)
-                    ]
-  }
-
-
-simulate :: World -> Int -> Int -> IO ()
-simulate world n delay = do
-  withMqtt $ \mc -> do
-    void $ foldM (step mc) world [1 .. n]
-  where
-    step mc w _ = do
-      let w' = spin w
-      send mc (toMqtt w)
-      sleep delay
-      pure w'
+-- | Busywork so we can render it.
+instance SomeWorld World where
+  spinWorld = spin
+  someResources = resources
+  otherPropertes w
+    = fromList [ ("Resources", Number $ fromInteger $ getSum $ resources w)
+               , ("Business Outputs", Number $ fromInteger $ toInteger $ length $ outputs $ w)
+               ]
 
 
 scenario1 :: IO ()
 scenario1 = simulate initialWorld 51 20
+
 
 reset :: IO ()
 reset = simulate initialWorld 1 1
