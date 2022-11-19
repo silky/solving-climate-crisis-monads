@@ -61,6 +61,18 @@ instance Cost ((Beans, Milk) -> WorldState Coffee) where
   cost = Sum 1
 
 
+gardenCenter :: (Plants, (Beans, Milk)) -> WorldState (Flowers, Coffee)
+gardenCenter (p, bm) = do
+  f <- florist p
+  c <- cafe bm
+  pure (f, c)
+
+
+instance Cost ((Plants, (Beans, Milk)) -> WorldState (Flowers, Coffee)) where
+  cost = cost @(Plants -> WorldState Flowers)
+       + cost @((Beans, Milk) -> WorldState Coffee)
+
+
 data SomeBusiness
   = forall a b
    . ( Default a
@@ -78,7 +90,6 @@ data World = World
   , businesses :: [SomeBusiness]
   , outputs    :: [BusinessOutput]
   } deriving Show
-
 
 
 type WorldState = MaybeT (State World)

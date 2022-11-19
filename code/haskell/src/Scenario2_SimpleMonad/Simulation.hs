@@ -30,6 +30,7 @@ initialWorld = World (Sum startingResources) businesses []
     businesses
       = [ SomeBusiness "flora's flowers" florist
         , SomeBusiness "haskell's cafe"  cafe
+        -- , SomeBusiness "ivory's garden center" gardenCenter
         ]
 
 
@@ -44,12 +45,6 @@ spin w@World{businesses} = newWorld
     run :: SomeBusiness -> WorldState BusinessOutput
     run (SomeBusiness _ (f :: a -> WorldState b))
       = BusinessOutput <$> f (def @a)
-
--- TODO:
---  [ ] Think about the model of outputs; we keep them in the return type,
---      basically, _and_ as a list of outputs; so we're kind of duplicating them.
---      Maybe this could be cleaned up; or maybe it's not important. Amusingly,
---      linear types could be interesting here; but I don't think I'll do that.
 
 
 instance SomeWorld World where

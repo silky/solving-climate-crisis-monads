@@ -7,8 +7,10 @@ import "base" Data.Monoid (Sum)
 import "text" Data.Text (Text)
 import Types
 
+
 data Plants  = Plant
 data Flowers = Flower
+
 
 florist :: Plants -> Flowers
 florist = const Flower
@@ -18,8 +20,10 @@ data Beans  = Bean
 data Milk   = Oat
 data Coffee = Latte | Cappuccino
 
+
 cafe :: (Beans, Milk) -> Coffee
 cafe = const Latte
+
 
 
 -- | Our initial guess at a  world consists:
@@ -49,5 +53,3 @@ data SomeBusiness
 -- | All we know about a business, really, is it's name.
 instance Show SomeBusiness where
   show (SomeBusiness name _) = show $ "business <" <> name <> ">"
-
-

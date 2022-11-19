@@ -66,7 +66,6 @@ initialWorld = World (Sum startingResources) businesses []
         ]
 
 
-
 -- | Busywork so we can render it.
 instance SomeWorld World where
   spinWorld = spin
@@ -77,9 +76,35 @@ instance SomeWorld World where
                ]
 
 
+-- Scenario 1 - Two businesses
+
 scenario1 :: IO ()
 scenario1 = simulate initialWorld 51 20
 
 
+
+
+
+-- Scenario 1a - An extra business!
+
+gardenCenter :: (Plants, (Beans, Milk)) -> (Flowers, Coffee)
+gardenCenter (p, bm) = (florist p, cafe bm)
+
+
+instance Cost ((Plants, (Beans, Milk)) -> (Flowers, Coffee)) where
+  cost = cost @(Plants -> Flowers)
+       + cost @((Beans, Milk) -> Coffee)
+
+
+scenario1a :: IO ()
+scenario1a = simulate w 51 20
+  where
+    gc = SomeBusiness "ivory's garden center" gardenCenter
+    w = initialWorld
+          { businesses = gc : businesses initialWorld
+          }
+
+
 reset :: IO ()
 reset = simulate initialWorld 1 1
+
