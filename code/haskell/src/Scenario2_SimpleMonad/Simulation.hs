@@ -62,3 +62,22 @@ scenario2 = simulate initialWorld 51 20
 
 reset :: IO ()
 reset = simulate initialWorld 1 1
+
+
+-- Don't have to follow the rules:
+
+rogueFlorist :: Plants -> WorldState Flowers
+rogueFlorist = const . mkWorldState $
+    \w -> (Just output, trackProduction w cost' output)
+  where
+    cost'  = cost @(Plants -> WorldState Flowers)
+    output = Flower
+
+
+scenario2a :: IO ()
+scenario2a = simulate w 51 20
+  where
+    f = SomeBusiness "bezos' bouquets" rogueFlorist
+    w = initialWorld
+          { businesses = f : businesses initialWorld
+          }

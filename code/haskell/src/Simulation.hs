@@ -21,8 +21,9 @@ startingResources = 100
 
 -- | The update that's actually sent over MQTT.
 data EarthUpdate = EarthUpdate
-  { step :: Double
-  , blob :: Object
+  { factor :: Double
+  , step   :: Int
+  , blob   :: Object
   }
   deriving (Generic, Show, ToJSON)
 
@@ -30,10 +31,11 @@ data EarthUpdate = EarthUpdate
 -- | Convert an arbitrary world to an update; really we just look at the
 -- resources and compute the magic number from it; but we also send through
 -- the other properties so it shows up on the UI.
-toMqtt :: SomeWorld world => world -> EarthUpdate
-toMqtt world = EarthUpdate
-  { step = 1 - fromInteger (getSum $ someResources world)
+toMqtt :: SomeWorld world => world -> Int -> EarthUpdate
+toMqtt world i = EarthUpdate
+  { factor = 1 - fromInteger (getSum $ someResources world)
            / (fromInteger startingResources)
+  , step = i
   , blob = otherPropertes world
   }
 
@@ -44,8 +46,8 @@ simulate world n delay = do
   withMqtt $ \mc -> do
     void $ foldM (step mc) world [1 .. n]
   where
-    step mc w _ = do
+    step mc w i = do
       let w' = spinWorld w
-      send mc (toMqtt w)
+      send mc (toMqtt w i)
       sleep delay
       pure w'

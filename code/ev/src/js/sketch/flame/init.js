@@ -11,8 +11,9 @@ export default function() {
   var step = 0;
 
   const props =
-    { "Step": 0.0
+    { "Factor": 0.0
     , "MQTT": false
+    , "Simulation step": 0
     // , "Resources": 0,
     }
   const propHandles = {};
@@ -20,12 +21,13 @@ export default function() {
   const gui = new GUI();
 
   const admin = gui.addFolder("~ Admin ~");
-  const stepThing = admin.add( props, "Step", 0, 1, 0.01 );
-  const mqttThing = admin.add( props, "MQTT" );
+  const factorThing = admin.add( props, "Factor", 0, 1, 0.01 );
+  const mqttThing   = admin.add( props, "MQTT" );
   mqttThing.disable(true);
   admin.close();
 
-  const earth = gui.addFolder("~ Earth ~");
+  const earth  = gui.addFolder("~ Earth ~");
+  const stepThing = earth.add( props, "Simulation step", 0, 1, 50 );
   // const resources = earth.add( props, "Resources", 0, 100, 1 );
 
   const resolution = new THREE.Vector2();
@@ -52,7 +54,8 @@ export default function() {
   const background = new BackgroundSphere();
 
   const render = () => {
-    const step = props["Step"];
+    // TODO: Rename `step` to `factor`;
+    const step = props["Factor"];
     flameCore.render(step);
 
     if( !flameAdded && step > 0.3 ) {
@@ -102,7 +105,7 @@ export default function() {
       let str = msg.payloadString;
       let obj = JSON.parse(str);
 
-      let v = obj["step"];
+      let v = obj["factor"];
 
       var keys = Object.keys( obj["blob"] );
 
@@ -119,8 +122,11 @@ export default function() {
         propHandles[key].setValue(value);
       });
 
-      props["Step"] = v ? v : 0.0;
-      stepThing.setValue(v);
+      let step = obj["step"];
+      stepThing.setValue(step);
+
+      props["Factor"] = v ? v : 0.0;
+      factorThing.setValue(v);
     };
 
     client.connect({

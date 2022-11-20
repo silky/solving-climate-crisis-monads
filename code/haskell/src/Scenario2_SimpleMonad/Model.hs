@@ -23,10 +23,17 @@ safelyProduce output =
   let c = cost @(input -> WorldState output)
    in mkWorldState $ \w ->
         if safeToConsume c w
-           then (Just output, w { resources = resources w - c
-                                , outputs   = BusinessOutput output : outputs w
-                                })
+           then (Just output, trackProduction w c output)
            else (Nothing, w)
+
+
+-- | Update the world with the new product and resource cost.
+trackProduction :: World -> Sum Integer -> output -> World
+trackProduction world@World{resources,outputs} cost' output =
+  world { resources = resources - cost'
+        , outputs   = BusinessOutput output : outputs
+        }
+
 
 -- | Our safety margin.
 safeToConsume :: Sum Integer -> World -> Bool
