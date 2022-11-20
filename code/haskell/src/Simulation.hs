@@ -35,7 +35,7 @@ toMqtt :: SomeWorld world => world -> Int -> EarthUpdate
 toMqtt world i = EarthUpdate
   { factor = 1 - fromInteger (getSum $ someResources world)
            / (fromInteger startingResources)
-  , step = i
+  , step = i - 1
   , blob = otherPropertes world
   }
 

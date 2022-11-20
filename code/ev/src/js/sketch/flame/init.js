@@ -13,8 +13,7 @@ export default function() {
   const props =
     { "Factor": 0.0
     , "MQTT": false
-    , "Simulation step": 0
-    // , "Resources": 0,
+    , "Simulation Step": 0
     }
   const propHandles = {};
 
@@ -27,7 +26,7 @@ export default function() {
   admin.close();
 
   const earth  = gui.addFolder("~ Earth ~");
-  const stepThing = earth.add( props, "Simulation step", 0, 1, 50 );
+  const stepThing = earth.add( props, "Simulation Step", 0, 51, 1 );
   // const resources = earth.add( props, "Resources", 0, 100, 1 );
 
   const resolution = new THREE.Vector2();
