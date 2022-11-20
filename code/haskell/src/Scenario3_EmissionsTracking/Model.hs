@@ -1,3 +1,5 @@
+{-# language AllowAmbiguousTypes #-}
+
 module Scenario3_EmissionsTracking.Model where
 
 import "base" Data.Monoid (Sum)
@@ -9,19 +11,23 @@ import Types
 -- Scope 2 - Indirect, powering your operation: electricity.
 -- Scope 3 - Emissions of your dependencies
 
-data Resource = Resource
-data Waste    = Waste
 
-instance Cost (Resource -> a) where
-  cost = 1
+-- TODO:
+--    - How to model this?
+
+
+-- class Emissions a where
+--   scope1 :: Sum Integer
+--   scope2 :: Sum Integer
+--   scope3 :: Sum Integer
 
 
 data World = World
-  { resources  :: [Resource]
-  , waste      :: [Waste]
+  { resources  :: Sum Integer
   , businesses :: [SomeBusiness]
+  , outputs    :: [BusinessOutput]
   }
-  -- deriving Show
+  deriving Show
 
 
 data SomeBusiness
@@ -30,3 +36,7 @@ data SomeBusiness
      , Cost (a -> b)
      )
   => SomeBusiness Text (a -> b)
+
+
+instance Show SomeBusiness where
+  show (SomeBusiness name _) = show $ "business <" <> name <> ">"
