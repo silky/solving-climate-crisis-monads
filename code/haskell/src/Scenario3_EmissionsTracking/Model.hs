@@ -2,9 +2,12 @@
 
 module Scenario3_EmissionsTracking.Model where
 
+import "transformers" Control.Monad.Trans.Maybe (MaybeT (..), runMaybeT)
+import "transformers" Control.Monad.Trans.State (State, runState, state)
+import "data-default" Data.Default (Default)
 import "base" Data.Monoid (Sum)
 import "text" Data.Text (Text)
-import "data-default" Data.Default (Default)
+import Simulation
 import Types
 
 -- Scope 1 - Direct emissions.
@@ -14,6 +17,19 @@ import Types
 
 -- TODO:
 --    - How to model this?
+--    - Idea: Inside the WorldState, we could have a `production` monad, and
+--      then capture the production details as we go about production.  This
+--      could then be bunled up into the cost of producing that thing.
+
+
+data ProductionInfo = ProductionInfo
+  { scope1 :: Sum Integer
+  , scope2 :: Sum Integer
+  , scope3 :: Sum Integer
+  }
+
+
+type Production = State ProductionInfo
 
 
 -- class Emissions a where
@@ -30,6 +46,20 @@ data World = World
   deriving Show
 
 
+type WorldState = MaybeT (State World)
+
+
+mkWorldState :: (World -> (Maybe a, World)) -> WorldState a
+mkWorldState = MaybeT . state
+
+
+runWorldState :: WorldState a -> World -> (Maybe a, World)
+runWorldState = runState . runMaybeT
+
+
+execWorldState :: WorldState a -> World -> World
+execWorldState m = snd . runWorldState m
+
 data SomeBusiness
   = forall a b
    . ( Default a
@@ -40,3 +70,11 @@ data SomeBusiness
 
 instance Show SomeBusiness where
   show (SomeBusiness name _) = show $ "business <" <> name <> ">"
+
+
+data Plants  = Plant
+data Flowers = Flower
+
+
+florist :: Plants -> WorldState Flowers
+florist = undefined

@@ -77,7 +77,7 @@ rogueFlorist = const . mkWorldState $
 scenario2a :: IO ()
 scenario2a = simulate w 51 20
   where
-    f = SomeBusiness "bezos' bouquets" rogueFlorist
+    f = SomeBusiness "winterkorn's wildflowers" rogueFlorist
     w = initialWorld
           { businesses = f : businesses initialWorld
           }
