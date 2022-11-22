@@ -63,6 +63,14 @@ scenario2 = simulate initialWorld 51 20
 reset :: IO ()
 reset = simulate initialWorld 1 1
 
+scenario2a :: IO ()
+scenario2a = simulate w 51 20
+  where
+    f = SomeBusiness "some florist" florist
+    w = initialWorld
+          { businesses = f : f : f : f : f : f : f : f : f : f : f :  f : businesses initialWorld
+          }
+
 
 -- Don't have to follow the rules:
 
@@ -74,8 +82,8 @@ rogueFlorist = const . mkWorldState $
     output = Flower
 
 
-scenario2a :: IO ()
-scenario2a = simulate w 51 20
+scenario2b :: IO ()
+scenario2b = simulate w 51 20
   where
     f = SomeBusiness "winterkorn's wildflowers" rogueFlorist
     w = initialWorld

@@ -102,6 +102,13 @@ data World = World
 type WorldState = MaybeT (State World)
 
 
+-- newtype WorldState' a = WorldState' (MaybeT (State World))
+--   deriving (Functor, Applicative, Monad)
+
+
+-- safelyProduce' :: WorldState' ->
+
+
 mkWorldState :: (World -> (Maybe a, World)) -> WorldState a
 mkWorldState = MaybeT . state
 

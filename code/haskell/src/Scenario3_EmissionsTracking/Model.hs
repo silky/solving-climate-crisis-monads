@@ -17,25 +17,40 @@ import Types
 
 -- TODO:
 --    - How to model this?
---    - Idea: Inside the WorldState, we could have a `production` monad, and
+--    - Idea: Inside the WorldState, we could have a `Business` monad, and
 --      then capture the production details as we go about production.  This
 --      could then be bunled up into the cost of producing that thing.
 
 
-data ProductionInfo = ProductionInfo
+
+-- gardenCenter:
+--    - florist -> scope 1+2+3 => scope 3
+--    - cafe    -> scope 1+2+3 => scope 3
+--    - + it's own outputs
+
+data BusinessInfo = BusinessInfo
   { scope1 :: Sum Integer
   , scope2 :: Sum Integer
   , scope3 :: Sum Integer
   }
 
 
-type Production = State ProductionInfo
-
 
 -- class Emissions a where
 --   scope1 :: Sum Integer
 --   scope2 :: Sum Integer
 --   scope3 :: Sum Integer
+
+
+-- data World = W
+--   { resources :: [Resource]
+--   , waste     :: [Waste]
+--   }
+
+
+-- materialise :: Default a => Resource -> a
+-- regenerate  :: Waste -> Resource
+-- consumer    :: Resource -> Waste
 
 
 data World = World
