@@ -10,6 +10,7 @@ import "text" Data.Text (Text)
 import Simulation
 import Types
 
+
 -- Scope 1 - Direct emissions.
 -- Scope 2 - Indirect, powering your operation: electricity.
 -- Scope 3 - Emissions of your dependencies
@@ -22,11 +23,11 @@ import Types
 --      could then be bunled up into the cost of producing that thing.
 
 
-
 -- gardenCenter:
 --    - florist -> scope 1+2+3 => scope 3
 --    - cafe    -> scope 1+2+3 => scope 3
 --    - + it's own outputs
+
 
 data BusinessInfo = BusinessInfo
   { scope1 :: Sum Integer
