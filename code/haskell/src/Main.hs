@@ -24,3 +24,6 @@ main = putStrLn "Nothing to see here."
 --
 --    The idea, then, can be to put more things out "our" control; or
 --    something.
+--
+--  - [ ] Change the `gardenCenter` example to also make some output of its
+--    own?
