@@ -29,29 +29,21 @@ import Types
 --    - + it's own outputs
 
 
-data BusinessInfo = BusinessInfo
+data Emissions = Emissions
   { scope1 :: Sum Integer
   , scope2 :: Sum Integer
   , scope3 :: Sum Integer
   }
 
 
+-- | A Monad
+type ProductionState = MaybeT (State Emissions)
+
 
 -- class Emissions a where
 --   scope1 :: Sum Integer
 --   scope2 :: Sum Integer
 --   scope3 :: Sum Integer
-
-
--- data World = W
---   { resources :: [Resource]
---   , waste     :: [Waste]
---   }
-
-
--- materialise :: Default a => Resource -> a
--- regenerate  :: Waste -> Resource
--- consumer    :: Resource -> Waste
 
 
 data World = World

@@ -102,11 +102,11 @@ data World = World
 type WorldState = MaybeT (State World)
 
 
+-- TODO: Refactor this so that we have an explicit `Monad` implementation so
+-- that we can shift the `safelyConsume` here.
+
 -- newtype WorldState' a = WorldState' (MaybeT (State World))
 --   deriving (Functor, Applicative, Monad)
-
-
--- safelyProduce' :: WorldState' ->
 
 
 mkWorldState :: (World -> (Maybe a, World)) -> WorldState a

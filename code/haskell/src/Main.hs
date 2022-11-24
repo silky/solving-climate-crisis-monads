@@ -1,4 +1,26 @@
 module Main where
 
+
 main :: IO ()
-main = undefined
+main = putStrLn "Nothing to see here."
+
+
+-- TODO:
+--  - [ ] Implement scenario 3; the `Production` Monad.
+--
+--  - [ ] Explain why we can't just limit production in Scenario1 in the
+--    'simulate' function.
+--
+--  - [ ] Work out a new way to compute the cost in the example of the
+--    `Production` monad; maybe it relates to the above, where we _don't_ use
+--    the instances initially to determine the cost. Maybe in Scenario1, we
+--    don't have an explicit cost; or I guess we can but we do it in the
+--    Simulation.
+--    Maybe can distinguish three domains:
+--
+--      1. Businesses
+--      2. Government
+--      3. God/Simulation
+--
+--    The idea, then, can be to put more things out "our" control; or
+--    something.
