@@ -7,6 +7,7 @@ maintainer:          noonsilk@gmail.com
 copyright:           2022 Noon van der Silk
 category:            Web
 
+
 ghc-options:
   - -Wall
   - -Wcompat
@@ -15,6 +16,7 @@ ghc-options:
   - -Wincomplete-uni-patterns
   - -Wpartial-fields
   - -Wredundant-constraints
+
 
 default-extensions:
   - DataKinds
@@ -33,6 +35,7 @@ default-extensions:
   - TypeApplications
   - TypeOperators
 
+
 dependencies:
   - base >= 4.7 && < 5
   - aeson
@@ -42,6 +45,7 @@ dependencies:
   - network-uri
   - text
   - transformers
+
 
 executables:
   climate-crisis-monads:
