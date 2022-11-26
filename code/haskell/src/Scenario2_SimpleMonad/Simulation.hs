@@ -30,7 +30,7 @@ initialWorld = World (Sum startingResources) businesses []
     businesses
       = [ SomeBusiness "flora's flowers" florist
         , SomeBusiness "haskell's cafe"  cafe
-        -- , SomeBusiness "ivory's garden center" gardenCenter
+        , SomeBusiness "ivory's garden center" gardenCenter
         ]
 
 
