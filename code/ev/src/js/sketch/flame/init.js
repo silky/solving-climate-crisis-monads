@@ -17,7 +17,7 @@ export default function() {
     }
   const propHandles = {};
 
-  const gui = new GUI();
+  const gui = new GUI( { width: 350 });
 
   const admin = gui.addFolder("~ Admin ~");
   const factorThing = admin.add( props, "Factor", 0, 1, 0.01 );
@@ -27,7 +27,6 @@ export default function() {
 
   const earth  = gui.addFolder("~ Earth ~");
   const stepThing = earth.add( props, "Simulation Step", 0, 51, 1 );
-  // const resources = earth.add( props, "Resources", 0, 100, 1 );
 
   const resolution = new THREE.Vector2();
   const mousemove = new THREE.Vector2();

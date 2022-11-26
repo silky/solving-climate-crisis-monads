@@ -10,6 +10,7 @@ module Scenario2_SimpleMonad.Model
   , Beans (..)
   , Milk (..)
   , Coffee (..)
+  , Cost (..)
   , mkWorldState -- Comment out to prevent the rogueFlorist from operating.
   , trackProduction
   , execWorldState
@@ -22,9 +23,14 @@ where
 import "transformers" Control.Monad.Trans.Maybe (MaybeT (..), runMaybeT)
 import "transformers" Control.Monad.Trans.State (State, runState, state)
 import "data-default" Data.Default (Default)
-import "base" Data.Monoid (Sum (..))
 import "text" Data.Text (Text)
 import Types
+
+
+-- | We can compute a 'Cost' for a thing. We will focus on computing costs for
+-- businesses (i.e. things of the form a -> b).
+class Cost a where
+  cost :: Int
 
 
 -- | Given some input type `input` and some output type `output`, first decide
@@ -45,7 +51,7 @@ safelyProduce output =
 
 
 -- | Update the world with the new product and resource cost.
-trackProduction :: World -> Sum Integer -> output -> World
+trackProduction :: World -> Int -> output -> World
 trackProduction world@World{resources,outputs} cost' output =
   world { resources = resources - cost'
         , outputs   = BusinessOutput output : outputs
@@ -53,28 +59,19 @@ trackProduction world@World{resources,outputs} cost' output =
 
 
 -- | Our safety margin.
-safeToConsume :: Sum Integer -> World -> Bool
+safeToConsume :: Int -> World -> Bool
 safeToConsume c World{resources} = resources - c >= 70
 
 
 -- A variation on our regular business model; we now return WorldState's and
 -- only produce things if we can do so safely.
 
-data Plants  = Plant
-data Flowers = Flower
-
-
 florist :: Plants -> WorldState Flowers
 florist = const $ safelyProduce @Plants Flower
 
 
 instance Cost (Plants -> WorldState Flowers) where
-  cost = Sum 1
-
-
-data Beans  = Bean
-data Milk   = Oat
-data Coffee = Latte | Cappuccino
+  cost = 1
 
 
 cafe :: (Beans, Milk) -> WorldState Coffee
@@ -82,8 +79,7 @@ cafe = const $ safelyProduce @(Beans, Milk) Latte
 
 
 instance Cost ((Beans, Milk) -> WorldState Coffee) where
-  cost = Sum 1
-
+  cost = 1
 
 
 data SomeBusiness
@@ -99,7 +95,7 @@ instance Show SomeBusiness where
 
 
 data World = World
-  { resources  :: Sum Integer
+  { resources  :: Int
   , businesses :: [SomeBusiness]
   , outputs    :: [BusinessOutput]
   } deriving Show

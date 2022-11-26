@@ -29,15 +29,14 @@ import Types
 --    - + it's own outputs
 
 
-data Emissions = Emissions
-  { scope1 :: Sum Integer
-  , scope2 :: Sum Integer
-  , scope3 :: Sum Integer
-  }
+class Emissions a where
+  scope1 :: Sum Integer
+  scope2 :: Sum Integer
+  scope3 :: Sum Integer
 
 
 -- | A Monad
-type ProductionState = MaybeT (State Emissions)
+-- type ProductionState = MaybeT (State Emissions)
 
 
 -- class Emissions a where
@@ -71,7 +70,7 @@ execWorldState m = snd . runWorldState m
 data SomeBusiness
   = forall a b
    . ( Default a
-     , Cost (a -> b)
+     , Emissions (a -> b)
      )
   => SomeBusiness Text (a -> b)
 
@@ -80,9 +79,23 @@ instance Show SomeBusiness where
   show (SomeBusiness name _) = show $ "business <" <> name <> ">"
 
 
-data Plants  = Plant
-data Flowers = Flower
+-- florist :: Plants -> WorldState Flowers
+-- florist = const $ produce @Plants Flower
 
 
-florist :: Plants -> WorldState Flowers
-florist = undefined
+-- instance Emissions (Plants -> WorldState Flowers) where
+--   scope1 = 1
+--   scope2 = 0
+--   scope3 = 0
+
+
+-- cafe :: (Beans, Milk) -> WorldState Coffee
+-- cafe = const $ safelyProduce @(Beans, Milk) Latte
+
+
+produce
+  :: forall input output
+   . Emissions (input -> WorldState output)
+  => output
+  -> WorldState output
+produce = undefined

@@ -6,7 +6,6 @@ import "base" Control.Monad (forM)
 import "aeson" Data.Aeson (Value (Number))
 import "aeson" Data.Aeson.KeyMap (fromList)
 import "data-default" Data.Default (Default, def)
-import "base" Data.Monoid (Sum (..))
 import Scenario2_SimpleMonad.Model
 import Simulation
 import Types
@@ -25,11 +24,11 @@ instance Default Milk where
 
 
 initialWorld :: World
-initialWorld = World (Sum startingResources) businesses []
+initialWorld = World startingResources businesses []
   where
     businesses
       = [ SomeBusiness "flora's flowers" florist
-        , SomeBusiness "haskell's cafe"  cafe
+        , SomeBusiness "haskell's cafe" cafe
         , SomeBusiness "ivory's garden center" gardenCenter
         ]
 
@@ -47,27 +46,14 @@ spin w@World{businesses} = newWorld
       = BusinessOutput <$> f (def @a)
 
 
-instance SomeWorld World where
-  spinWorld = spin
-  someResources = resources
-  otherPropertes w
-    = fromList [ ("Resources", Number $ fromInteger $ getSum $ resources w)
-               , ("Business Outputs", Number $ fromInteger $ toInteger $ length $ outputs $ w)
-               ]
-
-
 scenario2 :: IO ()
-scenario2 = simulate initialWorld 51 20
-
-
-reset :: IO ()
-reset = simulate initialWorld 1 1
+scenario2 = simulate "Simple monad" initialWorld 51 20
 
 
 -- More businesses just consumes the resources faster:
 
 scenario2a :: IO ()
-scenario2a = simulate w 51 20
+scenario2a = simulate "More businesses" w 51 20
   where
     fs = repeat $ SomeBusiness "clover's clovers" florist
     n  = 1
@@ -87,7 +73,7 @@ rogueFlorist = const . mkWorldState $
 
 
 scenario2b :: IO ()
-scenario2b = simulate w 51 20
+scenario2b = simulate "Rogue operator" w 51 20
   where
     f = SomeBusiness "winterkorn's wildflowers" rogueFlorist
     w = initialWorld
@@ -96,3 +82,21 @@ scenario2b = simulate w 51 20
 
 -- Could fix the above via "regulation"; i.e. control which constructors are
 -- exported.
+
+
+
+
+-- Busywork for rendering
+
+reset :: IO ()
+reset = simulate "" initialWorld 1 1
+
+
+instance SomeWorld World where
+  spinWorld = spin
+  someResources = resources
+  otherPropertes w
+    = fromList [ ("Resources", Number . fromIntegral . resources $ w)
+               , ("Business Outputs", Number . fromIntegral . length . outputs $ w)
+               ]
+

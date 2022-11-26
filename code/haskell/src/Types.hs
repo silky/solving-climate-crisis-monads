@@ -1,17 +1,20 @@
-{-# language AllowAmbiguousTypes #-}
-
 module Types where
 
 import "aeson" Data.Aeson (Object)
-import "base" Data.Monoid (Sum)
+
+-- Common datatypes for our businesses
+
+-- For a florist:
+
+data Plants  = Plant
+data Flowers = Flower
 
 
--- | We can compute a 'Cost' for a thing. We will focus on computing costs for
--- businesses (i.e. things of the form a -> b). We're going to want to add
--- these up at some point, so we'll make it a `Sum` so that's a bit easier to
--- do.
-class Cost a where
-  cost :: Sum Integer
+-- For a coffee shop:
+
+data Beans  = Bean
+data Milk   = Oat
+data Coffee = Latte | Cappuccino
 
 
 -- | What do businesses produce in this world? Why, Arbitrary Business Output,
@@ -19,11 +22,13 @@ class Cost a where
 data BusinessOutput = forall b. BusinessOutput b
 
 
+-- | We only know that it was some output.
 instance Show BusinessOutput where
   show _ = "Arbitrary Business Output"
 
 
+-- | A convenient class to make it easier to render things.
 class SomeWorld w where
-  someResources  :: w -> Sum Integer
+  someResources  :: w -> Int
   otherPropertes :: w -> Object
   spinWorld      :: w -> w

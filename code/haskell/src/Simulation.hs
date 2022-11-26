@@ -1,10 +1,11 @@
 module Simulation where
 
-import "base" Control.Monad (void, foldM)
 import "base" Control.Concurrent (threadDelay)
-import "aeson" Data.Aeson (Object, ToJSON)
-import "base" Data.Monoid (Sum (..))
+import "base" Control.Monad (foldM, void)
+import "aeson" Data.Aeson (Object, ToJSON, Value (String))
+import "aeson" Data.Aeson.KeyMap (fromList)
 import "base" GHC.Generics (Generic)
+import "text" Data.Text (Text)
 import Mqtt
 import Types
 
@@ -15,7 +16,7 @@ sleep n = threadDelay (10_000 * n)
 
 
 -- | The animations are all based of this number, so we centralise it.
-startingResources :: Integer
+startingResources :: Int
 startingResources = 100
 
 
@@ -31,23 +32,23 @@ data EarthUpdate = EarthUpdate
 -- | Convert an arbitrary world to an update; really we just look at the
 -- resources and compute the magic number from it; but we also send through
 -- the other properties so it shows up on the UI.
-toMqtt :: SomeWorld world => world -> Int -> EarthUpdate
-toMqtt world i = EarthUpdate
-  { factor = 1 - fromInteger (getSum $ someResources world)
-           / (fromInteger startingResources)
+toMqtt :: SomeWorld world => Text -> world -> Int -> EarthUpdate
+toMqtt name world i = EarthUpdate
+  { factor = 1 - fromIntegral (someResources world)
+           / (fromIntegral startingResources)
   , step = i - 1
-  , blob = otherPropertes world
+  , blob = otherPropertes world <> fromList [("Name", String name)]
   }
 
 
 -- | Step through a series of spins of the world, rendering each one.
-simulate :: SomeWorld world => world -> Int -> Int -> IO ()
-simulate world n delay = do
+simulate :: SomeWorld world => Text -> world -> Int -> Int -> IO ()
+simulate name world n delay = do
   withMqtt $ \mc -> do
     void $ foldM (step mc) world [1 .. n]
   where
     step mc w i = do
       let w' = spinWorld w
-      send mc (toMqtt w i)
+      send mc (toMqtt name w i)
       sleep delay
       pure w'
