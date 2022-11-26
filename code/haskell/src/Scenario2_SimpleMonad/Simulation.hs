@@ -63,16 +63,20 @@ scenario2 = simulate initialWorld 51 20
 reset :: IO ()
 reset = simulate initialWorld 1 1
 
+
+-- More businesses just consumes the resources faster:
+
 scenario2a :: IO ()
 scenario2a = simulate w 51 20
   where
-    f = SomeBusiness "some florist" florist
-    w = initialWorld
-          { businesses = f : f : f : f : f : f : f : f : f : f : f :  f : businesses initialWorld
+    fs = repeat $ SomeBusiness "clover's clovers" florist
+    n  = 1
+    w  = initialWorld
+          { businesses = take n fs <> businesses initialWorld
           }
 
 
--- Don't have to follow the rules:
+-- In the present setup, you don't actually have to follow the rules:
 
 rogueFlorist :: Plants -> WorldState Flowers
 rogueFlorist = const . mkWorldState $
@@ -89,3 +93,6 @@ scenario2b = simulate w 51 20
     w = initialWorld
           { businesses = f : businesses initialWorld
           }
+
+-- Could fix the above via "regulation"; i.e. control which constructors are
+-- exported.

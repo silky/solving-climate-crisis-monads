@@ -1,6 +1,23 @@
 {-# language AllowAmbiguousTypes #-}
+{-# language InstanceSigs        #-}
 
-module Scenario2_SimpleMonad.Model where
+module Scenario2_SimpleMonad.Model
+  ( Flowers (..)
+  , Plants (..)
+  , WorldState
+  , World (..)
+  , SomeBusiness (..)
+  , Beans (..)
+  , Milk (..)
+  , mkWorldState
+  -- ^ Comment `mkWorldState` out to prevent the rogueFlorist from operating.
+  , trackProduction
+  , execWorldState
+  , florist
+  , cafe
+  , gardenCenter
+  )
+where
 
 import "transformers" Control.Monad.Trans.Maybe (MaybeT (..), runMaybeT)
 import "transformers" Control.Monad.Trans.State (State, runState, state)
@@ -100,13 +117,6 @@ data World = World
 
 
 type WorldState = MaybeT (State World)
-
-
--- TODO: Refactor this so that we have an explicit `Monad` implementation so
--- that we can shift the `safelyConsume` here.
-
--- newtype WorldState' a = WorldState' (MaybeT (State World))
---   deriving (Functor, Applicative, Monad)
 
 
 mkWorldState :: (World -> (Maybe a, World)) -> WorldState a
