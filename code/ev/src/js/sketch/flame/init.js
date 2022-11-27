@@ -13,7 +13,6 @@ export default function() {
   const props =
     { "Factor": 0.0
     , "MQTT": false
-    , "Simulation Step": 0
     }
   const propHandles = {};
 
@@ -26,7 +25,6 @@ export default function() {
   admin.close();
 
   const earth  = gui.addFolder("~ Earth ~");
-  const stepThing = earth.add( props, "Simulation Step", 0, 51, 1 );
 
   const resolution = new THREE.Vector2();
   const mousemove = new THREE.Vector2();
@@ -105,7 +103,7 @@ export default function() {
 
       let v = obj["factor"];
 
-      var keys = Object.keys( obj["blob"] );
+      var keys = Object.keys( obj["blob"] ).sort();
 
       keys.forEach( key => {
         let value = obj["blob"][key];
@@ -121,7 +119,6 @@ export default function() {
       });
 
       let step = obj["step"];
-      stepThing.setValue(step);
 
       props["Factor"] = v ? v : 0.0;
       factorThing.setValue(v);

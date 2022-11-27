@@ -2,7 +2,7 @@ module Simulation where
 
 import "base" Control.Concurrent (threadDelay)
 import "base" Control.Monad (foldM, void)
-import "aeson" Data.Aeson (Object, ToJSON, Value (String))
+import "aeson" Data.Aeson (Object, ToJSON, Value (String, Number))
 import "aeson" Data.Aeson.KeyMap (fromList)
 import "base" GHC.Generics (Generic)
 import "text" Data.Text (Text)
@@ -37,8 +37,13 @@ toMqtt name world i = EarthUpdate
   { factor = 1 - fromIntegral (someResources world)
            / (fromIntegral startingResources)
   , step = i - 1
-  , blob = otherPropertes world <> fromList [("Name", String name)]
+  , blob = otherPropertes world <> extraProps
   }
+    where
+      extraProps = fromList [ ("* Model", String name)
+                            , ("* Step #", Number $ fromIntegral i)
+                            ]
+
 
 
 -- | Step through a series of spins of the world, rendering each one.

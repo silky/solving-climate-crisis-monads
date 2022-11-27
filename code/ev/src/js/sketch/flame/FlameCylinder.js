@@ -34,7 +34,7 @@ export default class FlameCylinder {
 
     // step = 0 - good
     // step = >0.3 start burning
-    // step = 1 - very bad
+    // step = 1+ - very bad
 
     let t = step - 0.3;
 

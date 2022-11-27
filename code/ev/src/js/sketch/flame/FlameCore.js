@@ -31,7 +31,14 @@ export default class FlameCore {
   }
 
   render(step) {
-    this.uniforms.t.value = step;
+
+    let t = step;
+    if ( step > 1 ) {
+      // Things get expotentially worse past a tipping point.
+      t = Math.exp(step - 1);
+    }
+
+    this.uniforms.t.value = t;
     this.obj.rotation.y += 0.002;
   }
 }

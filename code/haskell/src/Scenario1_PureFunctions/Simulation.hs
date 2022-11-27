@@ -5,12 +5,18 @@ module Scenario1_PureFunctions.Simulation where
 import "aeson" Data.Aeson (Value (Number))
 import "aeson" Data.Aeson.KeyMap (fromList)
 import "data-default" Data.Default (Default, def)
+import "base" Data.Monoid (Sum (..))
 import Scenario1_PureFunctions.Model
 import Simulation
 import Types
 
 
 -- A few orphan instances; a hint at the issues with our model.
+instance Cost (Plants -> Flowers) where
+  cost = Sum 1
+
+instance Cost ((Beans, Milk) -> Coffee) where
+  cost = Sum 1
 
 instance Default Plants where
   def = Plant
@@ -24,19 +30,21 @@ instance Default Milk where
 
 -- | Every time the world spins, the following events occur:
 --    - Businesses produce outputs.
---    - The amount of resources reduces by a number proportional to the
---      business outputs.
+--    - The amount of resources reduces by a cost of operating the businesses.
 --    - The amount of businesses stays the same.
 spin :: World -> World
 spin World{resources, businesses, outputs} =
   World
-    { resources  = resources - resourceCosts
+    { resources  = resources - getSum resourceCosts
     , outputs    = newOutputs ++ outputs
     , businesses = businesses
     }
   where
     newOutputs    = map output businesses
-    resourceCosts = length newOutputs
+    resourceCosts = foldMap cost' businesses
+
+    cost' :: SomeBusiness -> Sum Int
+    cost' (SomeBusiness _ (_f :: a -> b)) = cost @(a -> b)
 
     output :: SomeBusiness -> BusinessOutput
     output (SomeBusiness _ (f :: a -> b)) = BusinessOutput $ f (def @a)
@@ -56,7 +64,7 @@ initialWorld = World startingResources businesses []
 -- Scenario 1 - Two businesses
 
 scenario1 :: IO ()
-scenario1 = simulate "Two businesses" initialWorld 51 20
+scenario1 = simulate "1. Two businesses" initialWorld 51 20
 
 
 -- Scenario 1a - An extra business!
@@ -64,15 +72,13 @@ scenario1 = simulate "Two businesses" initialWorld 51 20
 gardenCenter :: (Plants, (Beans, Milk)) -> (Flowers, Coffee)
 gardenCenter (p, bm) = (florist p, cafe bm)
 
+instance Cost ((Plants, (Beans, Milk)) -> (Flowers, Coffee)) where
+  cost = cost @(Plants -> Flowers)
+       + cost @((Beans, Milk) -> Coffee)
 
--- Note: Our naive cost model goes wrong here; this business produces one
--- output, but actually calls the other businesses twice; so in reality it
--- produces two business outputs. But, annoyingly for us, our way of
--- representing outputs _also_ goes wrong, and these two errors cancel out.
--- In any case, it is an indication that our basic model is wrong.
 
 scenario1a :: IO ()
-scenario1a = simulate "Original + Garden center" w 51 20
+scenario1a = simulate "1a. + Garden center" w 51 20
   where
     i = SomeBusiness "ivory's garden center" gardenCenter
     w = initialWorld
