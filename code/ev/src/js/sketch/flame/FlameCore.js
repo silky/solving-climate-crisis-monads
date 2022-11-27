@@ -33,9 +33,9 @@ export default class FlameCore {
   render(step) {
 
     let t = step;
+    // Things get expotentially worse past a tipping point.
     if ( step > 1 ) {
-      // Things get expotentially worse past a tipping point.
-      t = Math.exp(step - 1);
+      t = Math.exp(step - 1) ** 2;
     }
 
     this.uniforms.t.value = t;

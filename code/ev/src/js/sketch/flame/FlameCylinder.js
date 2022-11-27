@@ -38,6 +38,11 @@ export default class FlameCylinder {
 
     let t = step - 0.3;
 
+    // Things get expotentially worse past a tipping point.
+    if ( step > 1 ) {
+      t = Math.exp(step - 1) ** 2;
+    }
+
     var opacityFactor = 1 * ( t / 0.7 );
 
     this.uniforms.opacityFactor.value = opacityFactor;
