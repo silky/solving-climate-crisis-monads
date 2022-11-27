@@ -47,13 +47,13 @@ spin w@World{businesses} = newWorld
 
 
 scenario2 :: IO ()
-scenario2 = simulate "Simple monad" initialWorld 51 20
+scenario2 = simulate "2. Simple monad" initialWorld 51 20
 
 
 -- More businesses just consumes the resources faster:
 
 scenario2a :: IO ()
-scenario2a = simulate "More businesses" w 51 20
+scenario2a = simulate "2a. More businesses" w 51 20
   where
     fs = repeat $ SomeBusiness "clover's clovers" florist
     n  = 1
@@ -73,7 +73,7 @@ rogueFlorist = const . mkWorldState $
 
 
 scenario2b :: IO ()
-scenario2b = simulate "Rogue operator" w 51 20
+scenario2b = simulate "2b. Rogue operator" w 51 20
   where
     f = SomeBusiness "winterkorn's wildflowers" rogueFlorist
     w = initialWorld
