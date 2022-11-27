@@ -12,6 +12,7 @@ import Types
 
 
 -- A few orphan instances; a hint at the issues with our model.
+
 instance Cost (Plants -> Flowers) where
   cost = Sum 1
 
