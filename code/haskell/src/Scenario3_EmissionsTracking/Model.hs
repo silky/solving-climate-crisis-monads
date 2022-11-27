@@ -34,15 +34,12 @@ class Emissions a where
   scope2 :: Sum Integer
   scope3 :: Sum Integer
 
+totalEmissions :: forall a. Emissions a => Sum Integer
+totalEmissions = scope1 @a + scope2 @a + scope3 @a
+
 
 -- | A Monad
 -- type ProductionState = MaybeT (State Emissions)
-
-
--- class Emissions a where
---   scope1 :: Sum Integer
---   scope2 :: Sum Integer
---   scope3 :: Sum Integer
 
 
 data World = World
@@ -79,18 +76,48 @@ instance Show SomeBusiness where
   show (SomeBusiness name _) = show $ "business <" <> name <> ">"
 
 
--- florist :: Plants -> WorldState Flowers
--- florist = const $ produce @Plants Flower
+type Florist = Plants -> WorldState Flowers
 
 
--- instance Emissions (Plants -> WorldState Flowers) where
---   scope1 = 1
---   scope2 = 0
---   scope3 = 0
+florist :: Florist
+florist = undefined
 
 
--- cafe :: (Beans, Milk) -> WorldState Coffee
--- cafe = const $ safelyProduce @(Beans, Milk) Latte
+type Cafe = (Beans, Milk) -> WorldState Coffee
+
+
+cafe :: Cafe
+cafe = undefined
+
+
+type GardenCenter = ((Beans, Milk), Plants) -> WorldState (Flowers, Coffee)
+
+
+gardenCenter :: GardenCenter
+gardenCenter (bm, p) = do
+  f <- florist p
+  c <- cafe bm
+  pure (f, c)
+
+
+-- TODO: I think this is bad. We want this to be computed dynmaically from the
+-- operation of the business; but as-is it is hard-coded.
+
+instance Emissions Florist where
+  scope1 = 1
+  scope2 = 1
+  scope3 = 0
+
+instance Emissions Cafe where
+  scope1 = 1
+  scope2 = 1
+  scope3 = 0
+
+instance Emissions GardenCenter where
+  scope1 = 1
+  scope2 = 1
+  scope3 = totalEmissions @Cafe
+         + totalEmissions @Florist
 
 
 produce
