@@ -35,24 +35,27 @@ data Emissions = Emissions
   }
   deriving Show
 
+
+noEmissions :: Emissions
+noEmissions = Emissions 0 0 0
+
+
 totalEmissions :: Emissions -> Int
 totalEmissions Emissions{scope1, scope2, scope3} = scope1 + scope2 + scope3
 
 
 type ProductionState = State Emissions
 
+mkProductionState :: (Emissions -> (a, Emissions)) -> ProductionState a
+mkProductionState = state
 
 
+runProductionState :: ProductionState a -> Emissions -> (a, Emissions)
+runProductionState = runState
 
--- | We can compute a 'Cost' for a thing. We will focus on computing costs for
--- businesses (i.e. things of the form a -> b).
--- class Emissions a where
---   scope1 :: Int
---   scope2 :: Int
---   scope3 :: Int
 
--- totalEmissions :: forall a. Emissions a => Int
--- totalEmissions = scope1 @a + scope2 @a + scope3 @a
+execProductionState :: ProductionState a -> Emissions -> Emissions
+execProductionState m = snd . runProductionState m
 
 
 data World = World
@@ -101,6 +104,11 @@ produce s1 s2 output
       )
 
 
+runBusiness :: ProductionState a -> WorldState a
+runBusiness p = do
+  undefined
+
+
 florist :: Plants -> ProductionState Flowers
 florist _ = produce 1 0 Flower
 
@@ -111,9 +119,9 @@ cafe _ingredients = produce 1 0 Latte
 
 gardenCenter :: ((Beans, Milk), Plants) -> ProductionState (Flowers, Coffee)
 gardenCenter (bm, p) = do
-  f <- florist p
   c <- cafe bm
-  pure (f, c)
+  f <- florist p
+  produce 0 0 (f, c)
 
 
 -- -- | Given some input type `input` and some output type `output`, first decide
