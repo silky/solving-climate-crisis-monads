@@ -6,12 +6,13 @@ main = putStrLn "Nothing to see here."
 
 
 -- TODO:
---  - [x] Complete example two showing how to deal with the rogue florist.
---
 --  - [ ] Implement scenario 3; the `Production` Monad.
 --
+--  - [ ] Try and use the StateT thing properly:
+--        <https://hackage.haskell.org/package/mtl-2.2.1/docs/Control-Monad-State-Lazy.html>
+--
 --  - [ ] Explain why we can't just limit production in Scenario1 in the
---        'simulate' function.
+--        'simulate' function. (Why? Actually I don't know the answer.)
 --
 --  - [ ] Work out a new way to compute the cost in the example of the
 --        `Production` monad; maybe it relates to the above, where we _don't_ use
@@ -27,8 +28,12 @@ main = putStrLn "Nothing to see here."
 --    The idea, then, can be to put more things out "our" control; or
 --    something.
 --
---  - [ ] Change the `gardenCenter` example to also make some output of its
---        own?
 --
 --  - [ ] Eventually want to get to a state where businesses are not only
 --        producing _output_ but also doing some kind of regnerative work.
+--
+--  - [ ] In the `admin` section add flag to stop the earth rotating.
+--
+--  - [x] Complete example two showing how to deal with the rogue florist.
+--  - [x] Change the `gardenCenter` example to also make some output of its
+--        own? (Nah, not important.)

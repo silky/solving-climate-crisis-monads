@@ -7,14 +7,22 @@ import "aeson" Data.Aeson (Object)
 -- For a florist:
 
 data Plants  = Plant
+  deriving Show
+
 data Flowers = Flower
+  deriving Show
 
 
 -- For a coffee shop:
 
 data Beans  = Bean
+  deriving Show
+
 data Milk   = Oat
+  deriving Show
+
 data Coffee = Latte | Cappuccino
+  deriving Show
 
 
 -- | What do businesses produce in this world? Why, Arbitrary Business Output,

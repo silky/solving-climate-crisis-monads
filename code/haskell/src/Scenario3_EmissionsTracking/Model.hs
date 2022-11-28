@@ -5,7 +5,6 @@ module Scenario3_EmissionsTracking.Model where
 import "transformers" Control.Monad.Trans.Maybe (MaybeT (..), runMaybeT)
 import "transformers" Control.Monad.Trans.State (State, runState, state)
 import "data-default" Data.Default (Default)
-import "base" Data.Monoid (Sum)
 import "text" Data.Text (Text)
 import Simulation
 import Types
@@ -29,28 +28,31 @@ import Types
 --    - + it's own outputs
 
 
--- class Emissions a where
---   scope1 :: Sum Integer
---   scope2 :: Sum Integer
---   scope3 :: Sum Integer
+data Emissions = Emissions
+  { scope1 :: Int
+  , scope2 :: Int
+  , scope3 :: Int
+  }
+  deriving Show
+
+totalEmissions :: Emissions -> Int
+totalEmissions Emissions{scope1, scope2, scope3} = scope1 + scope2 + scope3
 
 
-
--- | A Monad
--- type ProductionState = MaybeT (State Emissions)
+type ProductionState = State Emissions
 
 
 
 
 -- | We can compute a 'Cost' for a thing. We will focus on computing costs for
 -- businesses (i.e. things of the form a -> b).
-class Emissions a where
-  scope1 :: Int
-  scope2 :: Int
-  scope3 :: Int
+-- class Emissions a where
+--   scope1 :: Int
+--   scope2 :: Int
+--   scope3 :: Int
 
-totalEmissions :: forall a. Emissions a => Int
-totalEmissions = scope1 @a + scope2 @a + scope3 @a
+-- totalEmissions :: forall a. Emissions a => Int
+-- totalEmissions = scope1 @a + scope2 @a + scope3 @a
 
 
 data World = World
@@ -78,7 +80,7 @@ execWorldState m = snd . runWorldState m
 data SomeBusiness
   = forall a b
    . ( Default a
-     , Emissions (a -> WorldState b)
+     -- , Cost (a -> WorldState b)
      )
   => SomeBusiness Text (a -> b)
 
@@ -87,85 +89,58 @@ instance Show SomeBusiness where
   show (SomeBusiness name _) = show $ "business <" <> name <> ">"
 
 
-type Florist = Plants -> WorldState Flowers
+produce :: Int -> Int -> a -> ProductionState a
+produce s1 s2 output
+  = state $ \p ->
+      ( output
+      , Emissions
+          { scope1 = s1
+          , scope2 = s2
+          , scope3 = totalEmissions p
+          }
+      )
 
 
-florist :: Florist
-florist = undefined
+florist :: Plants -> ProductionState Flowers
+florist _ = produce 1 0 Flower
 
 
-type Cafe = (Beans, Milk) -> WorldState Coffee
+cafe :: (Beans, Milk) -> ProductionState Coffee
+cafe _ingredients = produce 1 0 Latte
 
 
-cafe :: Cafe
-cafe = undefined
-
-
-type GardenCenter = ((Beans, Milk), Plants) -> WorldState (Flowers, Coffee)
-
-
-gardenCenter :: GardenCenter
+gardenCenter :: ((Beans, Milk), Plants) -> ProductionState (Flowers, Coffee)
 gardenCenter (bm, p) = do
   f <- florist p
   c <- cafe bm
   pure (f, c)
 
 
--- TODO: I think this is bad. We want this to be computed dynmaically from the
--- operation of the business; but as-is it is hard-coded.
-
--- instance Emissions Florist where
---   scope1 = 1
---   scope2 = 1
---   scope3 = 0
-
--- instance Emissions Cafe where
---   scope1 = 1
---   scope2 = 1
---   scope3 = 0
-
--- instance Emissions GardenCenter where
---   scope1 = 1
---   scope2 = 1
---   scope3 = totalEmissions @Cafe
---          + totalEmissions @Florist
-
-
--- produce
+-- -- | Given some input type `input` and some output type `output`, first decide
+-- -- if we can safely produce the output, by checking the amount of resources we
+-- -- would need, and then produce the output and update the world, if it was
+-- -- indeed possible to do so.
+-- safelyProduce
 --   :: forall input output
 --    . Emissions (input -> WorldState output)
 --   => output
---   -> WorldState output
--- produce = undefined
---
---
+--   -> ProductionState output
+-- safelyProduce output =
+--   let c = totalEmissions @(input -> WorldState output)
+--    in mkWorldState $ \w ->
+--         if safeToConsume c w
+--            then (Just output, trackProduction w c output)
+--            else (Nothing, w)
 
 
--- | Given some input type `input` and some output type `output`, first decide
--- if we can safely produce the output, by checking the amount of resources we
--- would need, and then produce the output and update the world, if it was
--- indeed possible to do so.
-safelyProduce
-  :: forall input output
-   . Emissions (input -> WorldState output)
-  => output
-  -> WorldState output
-safelyProduce output =
-  let c = totalEmissions @(input -> WorldState output)
-   in mkWorldState $ \w ->
-        if safeToConsume c w
-           then (Just output, trackProduction w c output)
-           else (Nothing, w)
+-- -- | Update the world with the new product and resource cost.
+-- trackProduction :: World -> Int -> output -> World
+-- trackProduction world@World{resources,outputs} cost' output =
+--   world { resources = resources - cost'
+--         , outputs   = BusinessOutput output : outputs
+--         }
 
 
--- | Update the world with the new product and resource cost.
-trackProduction :: World -> Int -> output -> World
-trackProduction world@World{resources,outputs} cost' output =
-  world { resources = resources - cost'
-        , outputs   = BusinessOutput output : outputs
-        }
-
-
--- | Our safety margin.
-safeToConsume :: Int -> World -> Bool
-safeToConsume c World{resources} = resources - c >= 70
+-- -- | Our safety margin.
+-- safeToConsume :: Int -> World -> Bool
+-- safeToConsume c World{resources} = resources - c >= 70
