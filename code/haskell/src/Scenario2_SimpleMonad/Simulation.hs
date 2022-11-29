@@ -6,6 +6,7 @@ import "base" Control.Monad (forM)
 import "aeson" Data.Aeson (Value (Number))
 import "aeson" Data.Aeson.KeyMap (fromList)
 import "data-default" Data.Default (Default, def)
+import "base" Data.Maybe (fromMaybe)
 import Scenario2_SimpleMonad.Model
 import Simulation
 import Types
@@ -26,20 +27,25 @@ instance Default Milk where
 initialWorld :: World
 initialWorld = World startingResources businesses []
   where
-    businesses
-      = [ SomeBusiness "flora's flowers" florist
-        , SomeBusiness "haskell's cafe" cafe
-        , SomeBusiness "ivory's garden center" gardenCenter
-        ]
+    businesses =
+      [ SomeBusiness "flora's flowers" florist
+      , SomeBusiness "haskell's cafe" cafe
+      , SomeBusiness "ivory's garden center" gardenCenter
+      ]
 
 
 spin :: World -> World
-spin w@World{businesses} = newWorld
+spin w@World{businesses,outputs} = newWorld
   where
+    -- Note: We run all the businesses at once.
     newOutputs :: WorldState [BusinessOutput]
     newOutputs = forM businesses run
 
-    newWorld = execWorldState newOutputs w
+    -- TODO: Maybe there's a way to refactor this so we keep incrementally
+    -- producing output of our businesses until we fail; presently, if
+    -- evaluating the entire thing would make us broke, we don't do it at all.
+    (mo, w') = runWorldState newOutputs w
+    newWorld = w' { outputs = outputs ++ fromMaybe [] mo }
 
     run :: SomeBusiness -> WorldState BusinessOutput
     run (SomeBusiness _ (f :: a -> WorldState b))
@@ -52,11 +58,10 @@ scenario2 = simulate "2. Simple monad" initialWorld 51 20
 
 -- More businesses just consumes the resources faster:
 
-scenario2a :: IO ()
-scenario2a = simulate "2a. More businesses" w 51 20
+scenario2a :: Int -> IO ()
+scenario2a n = simulate "2a. More businesses" w 51 20
   where
     fs = repeat $ SomeBusiness "clover's clovers" florist
-    n  = 1
     w  = initialWorld
           { businesses = take n fs <> businesses initialWorld
           }
@@ -66,7 +71,7 @@ scenario2a = simulate "2a. More businesses" w 51 20
 
 rogueFlorist :: Plants -> WorldState Flowers
 rogueFlorist = const . mkWorldState $
-    \w -> (Just output, trackProduction w cost' output)
+    \w -> (Just output, trackProduction w cost')
   where
     cost'  = cost @(Plants -> WorldState Flowers)
     output = Flower

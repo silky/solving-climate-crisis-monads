@@ -2,11 +2,11 @@
 
 module Scenario3_EmissionsTracking.Model where
 
+import "base" Control.Monad (forM)
 import "transformers" Control.Monad.Trans.Maybe (MaybeT (..), runMaybeT)
 import "transformers" Control.Monad.Trans.State (State, runState, state)
 import "data-default" Data.Default (Default)
 import "text" Data.Text (Text)
-import Simulation
 import Types
 
 
@@ -15,17 +15,9 @@ import Types
 -- Scope 3 - Emissions of your dependencies
 
 
--- TODO:
---    - How to model this?
---    - Idea: Inside the WorldState, we could have a `Business` monad, and
---      then capture the production details as we go about production.  This
---      could then be bunled up into the cost of producing that thing.
-
-
 -- gardenCenter:
 --    - florist -> scope 1+2+3 => scope 3
 --    - cafe    -> scope 1+2+3 => scope 3
---    - + it's own outputs
 
 
 data Emissions = Emissions
@@ -34,6 +26,11 @@ data Emissions = Emissions
   , scope3 :: Int
   }
   deriving Show
+
+
+data RegenerativeAction
+  = DoNothing
+  | PlantTree
 
 
 noEmissions :: Emissions
@@ -45,6 +42,7 @@ totalEmissions Emissions{scope1, scope2, scope3} = scope1 + scope2 + scope3
 
 
 type ProductionState = State Emissions
+-- type ProductionState = State (Emissions, [RegenerativeAction])
 
 mkProductionState :: (Emissions -> (a, Emissions)) -> ProductionState a
 mkProductionState = state
@@ -83,9 +81,8 @@ execWorldState m = snd . runWorldState m
 data SomeBusiness
   = forall a b
    . ( Default a
-     -- , Cost (a -> WorldState b)
      )
-  => SomeBusiness Text (a -> b)
+  => SomeBusiness Text (a -> ProductionState b)
 
 
 instance Show SomeBusiness where
@@ -94,19 +91,24 @@ instance Show SomeBusiness where
 
 produce :: Int -> Int -> a -> ProductionState a
 produce s1 s2 output
-  = state $ \p ->
+  = state $ \previousEmissions ->
       ( output
       , Emissions
           { scope1 = s1
           , scope2 = s2
-          , scope3 = totalEmissions p
+          , scope3 = totalEmissions previousEmissions
           }
       )
 
 
-runBusiness :: ProductionState a -> WorldState a
+runBusiness :: ProductionState output -> WorldState output
 runBusiness p = do
-  undefined
+  let (output, emissions) = runProductionState p noEmissions
+      totalCost = totalEmissions emissions
+   in mkWorldState $ \w ->
+        if safeToConsume totalCost w
+           then (Just output, trackProduction w totalCost output)
+           else (Nothing, w)
 
 
 florist :: Plants -> ProductionState Flowers
@@ -124,31 +126,22 @@ gardenCenter (bm, p) = do
   produce 0 0 (f, c)
 
 
--- -- | Given some input type `input` and some output type `output`, first decide
--- -- if we can safely produce the output, by checking the amount of resources we
--- -- would need, and then produce the output and update the world, if it was
--- -- indeed possible to do so.
--- safelyProduce
---   :: forall input output
---    . Emissions (input -> WorldState output)
---   => output
---   -> ProductionState output
--- safelyProduce output =
---   let c = totalEmissions @(input -> WorldState output)
---    in mkWorldState $ \w ->
---         if safeToConsume c w
---            then (Just output, trackProduction w c output)
---            else (Nothing, w)
+-- Cost is now computed "dynamically"; per evaluation.
+megaGardenCenter :: ([(Beans, Milk)], [Plants]) -> ProductionState ([Flowers], [Coffee])
+megaGardenCenter (bms, ps) = do
+  fs <- forM bms cafe
+  cs <- forM ps florist
+  produce 0 0 (cs, fs)
 
 
--- -- | Update the world with the new product and resource cost.
--- trackProduction :: World -> Int -> output -> World
--- trackProduction world@World{resources,outputs} cost' output =
---   world { resources = resources - cost'
---         , outputs   = BusinessOutput output : outputs
---         }
+-- | Update the world with the new product and resource cost.
+trackProduction :: World -> Int -> output -> World
+trackProduction world@World{resources,outputs} cost' output =
+  world { resources = resources - cost'
+        , outputs   = BusinessOutput output : outputs
+        }
 
 
--- -- | Our safety margin.
--- safeToConsume :: Int -> World -> Bool
--- safeToConsume c World{resources} = resources - c >= 70
+-- | Our safety margin.
+safeToConsume :: Int -> World -> Bool
+safeToConsume c World{resources} = resources - c >= 70

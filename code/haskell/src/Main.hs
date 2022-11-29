@@ -8,13 +8,10 @@ main = putStrLn "Nothing to see here."
 -- TODO:
 --  - [ ] Implement scenario 3; the `Production` Monad.
 --
---  - [ ] Try and use the StateT thing properly:
---        <https://hackage.haskell.org/package/mtl-2.2.1/docs/Control-Monad-State-Lazy.html>
---
 --  - [ ] Explain why we can't just limit production in Scenario1 in the
 --        'simulate' function. (Why? Actually I don't know the answer.)
 --
---  - [ ] Work out a new way to compute the cost in the example of the
+--  - [x] Work out a new way to compute the cost in the example of the
 --        `Production` monad; maybe it relates to the above, where we _don't_ use
 --        the instances initially to determine the cost. Maybe in Scenario1, we
 --        don't have an explicit cost; or I guess we can but we do it in the
@@ -37,3 +34,5 @@ main = putStrLn "Nothing to see here."
 --  - [x] Complete example two showing how to deal with the rogue florist.
 --  - [x] Change the `gardenCenter` example to also make some output of its
 --        own? (Nah, not important.)
+--  - [!] Try and use the StateT thing properly:
+--        <https://hackage.haskell.org/package/mtl-2.2.1/docs/Control-Monad-State-Lazy.html>

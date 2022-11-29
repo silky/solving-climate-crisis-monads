@@ -14,6 +14,8 @@ module Scenario2_SimpleMonad.Model
   , mkWorldState -- Comment out to prevent the rogueFlorist from operating.
   , trackProduction
   , execWorldState
+  , evalWorldState
+  , runWorldState
   , florist
   , cafe
   , gardenCenter
@@ -46,16 +48,14 @@ safelyProduce output =
   let c = cost @(input -> WorldState output)
    in mkWorldState $ \w ->
         if safeToConsume c w
-           then (Just output, trackProduction w c output)
+           then (Just output, trackProduction w c)
            else (Nothing, w)
 
 
--- | Update the world with the new product and resource cost.
-trackProduction :: World -> Int -> output -> World
-trackProduction world@World{resources,outputs} cost' output =
-  world { resources = resources - cost'
-        , outputs   = BusinessOutput output : outputs
-        }
+-- | Update the world by consuming the resources.
+trackProduction :: World -> Int -> World
+trackProduction world@World{resources} cost' =
+  world { resources = resources - cost' }
 
 
 -- | Our safety margin.
@@ -114,6 +114,10 @@ runWorldState = runState . runMaybeT
 
 execWorldState :: WorldState a -> World -> World
 execWorldState m = snd . runWorldState m
+
+
+evalWorldState :: WorldState a -> World -> Maybe a
+evalWorldState m = fst . runWorldState m
 
 
 -- We can also define a "combined" business (albeit in a somewhat unergonomic way):
