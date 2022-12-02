@@ -32,6 +32,7 @@ data Emissions = Emissions
 data RegenerativeAction
   = DoNothing
   | PlantTree
+  | Activism
 
 
 noEmissions :: Emissions
@@ -42,7 +43,9 @@ totalEmissions :: Emissions -> Int
 totalEmissions Emissions{scope1, scope2, scope3} = scope1 + scope2 + scope3
 
 
+-- This is a production plan
 type ProductionState = State Emissions
+-- Next version:
 -- type ProductionState = State (Emissions, [RegenerativeAction])
 
 mkProductionState :: (Emissions -> (a, Emissions)) -> ProductionState a
