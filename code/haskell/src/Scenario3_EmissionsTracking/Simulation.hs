@@ -27,9 +27,9 @@ initialWorld :: World
 initialWorld = World startingResources businesses []
   where
     businesses =
-      [ SomeBusiness "flora's flowers" florist
-      , SomeBusiness "haskell's cafe" cafe
-      , SomeBusiness "ivory's garden center" gardenCenter
+      -- [ SomeBusiness "flora's flowers" florist
+      -- , SomeBusiness "haskell's cafe" cafe
+      [ SomeBusiness "ivory's garden center" gardenCenter
       ]
 
 
@@ -37,7 +37,7 @@ spin :: World -> World
 spin w@World{businesses} = newWorld
   where
     newOutputs :: WorldState [BusinessOutput]
-    newOutputs = forM businesses (runBusiness . run)
+    newOutputs = forM businesses (runProduction . run)
 
     newWorld = execWorldState newOutputs w
 

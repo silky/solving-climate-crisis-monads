@@ -90,9 +90,10 @@ instance Show SomeBusiness where
   show (SomeBusiness name _) = show $ "business <" <> name <> ">"
 
 
-produce :: Int -> Int -> a -> ProductionState a
+produce :: Int -> Int -> output -> ProductionState output
 produce s1 s2 output
   = state $ \previousEmissions ->
+      -- Fix: Track outputs in `ProductionState`.
       ( output
       , Emissions
           { scope1 = s1
@@ -102,8 +103,8 @@ produce s1 s2 output
       )
 
 
-runBusiness :: ProductionState output -> WorldState output
-runBusiness p = do
+runProduction :: ProductionState output -> WorldState output
+runProduction p = do
   let (output, emissions) = runProductionState p noEmissions
       totalCost = totalEmissions emissions
    in mkWorldState $ \w ->
@@ -117,13 +118,14 @@ florist _ = produce 1 0 Flower
 
 
 cafe :: (Beans, Milk) -> ProductionState Coffee
-cafe _ingredients = produce 1 0 Latte
+cafe _ = produce 1 0 Latte
 
 
 gardenCenter :: ((Beans, Milk), Plants) -> ProductionState (Flowers, Coffee)
 gardenCenter (bm, p) = do
   c <- cafe bm
   f <- florist p
+  -- No added value.
   produce 0 0 (f, c)
 
 

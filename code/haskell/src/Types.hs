@@ -25,6 +25,12 @@ data Coffee = Latte | Cappuccino
   deriving Show
 
 
+-- For a garden center:
+
+-- data GardenCenterInputs  = GCI Plants Beans Milk
+-- data GardenCenterOutputs = GCO Flowers Coffee
+
+
 -- | What do businesses produce in this world? Why, Arbitrary Business Output,
 -- of course!
 data BusinessOutput = forall b. BusinessOutput b

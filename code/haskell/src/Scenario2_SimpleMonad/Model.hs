@@ -48,14 +48,20 @@ safelyProduce output =
   let c = cost @(input -> WorldState output)
    in mkWorldState $ \w ->
         if safeToConsume c w
-           then (Just output, trackProduction w c)
+           then (Just output, trackProduction w c output)
            else (Nothing, w)
 
 
 -- | Update the world by consuming the resources.
-trackProduction :: World -> Int -> World
-trackProduction world@World{resources} cost' =
-  world { resources = resources - cost' }
+trackProduction :: World -> Int -> output -> World
+trackProduction world@World{resources,outputs} cost' output =
+  world { resources = resources - cost'
+        , outputs   = BusinessOutput output : outputs
+        }
+
+-- World { resources, waste, joy }
+--  businesses :: Resource -> (Waste, Joy)
+--  recycling  :: (Waste, Joy) -> Resource
 
 
 -- | Our safety margin.
@@ -126,6 +132,11 @@ gardenCenter :: (Plants, (Beans, Milk)) -> WorldState (Flowers, Coffee)
 gardenCenter (p, bm) = do
   f <- florist p
   c <- cafe bm
+
+  -- In theory: (but totally wrong; double counting via the monad.)
+  -- safelyProduce @(Plants, (Beans, Milk)) (Flower, Coffee)
+
+  -- No addded value! Rentier haskelling!
   pure (f, c)
 
 

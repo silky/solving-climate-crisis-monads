@@ -6,7 +6,6 @@ import "base" Control.Monad (forM)
 import "aeson" Data.Aeson (Value (Number))
 import "aeson" Data.Aeson.KeyMap (fromList)
 import "data-default" Data.Default (Default, def)
-import "base" Data.Maybe (fromMaybe)
 import Scenario2_SimpleMonad.Model
 import Simulation
 import Types
@@ -28,28 +27,30 @@ initialWorld :: World
 initialWorld = World startingResources businesses []
   where
     businesses =
-      [ SomeBusiness "flora's flowers" florist
-      , SomeBusiness "haskell's cafe" cafe
-      , SomeBusiness "ivory's garden center" gardenCenter
+      -- [ SomeBusiness "flora's flowers" florist
+      -- , SomeBusiness "haskell's cafe" cafe
+      [ SomeBusiness "ivory's garden center" gardenCenter
       ]
 
 
 spin :: World -> World
-spin w@World{businesses,outputs} = newWorld
+spin w@World{businesses} = newWorld
   where
     -- Note: We run all the businesses at once.
     newOutputs :: WorldState [BusinessOutput]
     newOutputs = forM businesses run
 
-    -- TODO: Maybe there's a way to refactor this so we keep incrementally
-    -- producing output of our businesses until we fail; presently, if
-    -- evaluating the entire thing would make us broke, we don't do it at all.
-    (mo, w') = runWorldState newOutputs w
-    newWorld = w' { outputs = outputs ++ fromMaybe [] mo }
+    newWorld = execWorldState newOutputs w
 
     run :: SomeBusiness -> WorldState BusinessOutput
     run (SomeBusiness _ (f :: a -> WorldState b))
       = BusinessOutput <$> f (def @a)
+
+
+-- If we made too much stuff, we get NO outputs, and FULL resource usage
+--  business produces 100 things.
+--    -> resources -> 70
+--    -> outputs   -> 1 resource => 1 output
 
 
 scenario2 :: IO ()
@@ -71,7 +72,7 @@ scenario2a n = simulate "2a. More businesses" w 51 20
 
 rogueFlorist :: Plants -> WorldState Flowers
 rogueFlorist = const . mkWorldState $
-    \w -> (Just output, trackProduction w cost')
+    \w -> (Just output, trackProduction w cost' output)
   where
     cost'  = cost @(Plants -> WorldState Flowers)
     output = Flower
