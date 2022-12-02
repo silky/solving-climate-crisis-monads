@@ -14,6 +14,7 @@ import Types
 -- Scope 2 - Indirect, powering your operation: electricity.
 -- Scope 3 - Emissions of your dependencies
 
+-- <https://www.climatepartner.com/en/climate-action-insights/reducing-scope-emissions>
 
 -- gardenCenter:
 --    - florist -> scope 1+2+3 => scope 3
