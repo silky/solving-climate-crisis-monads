@@ -36,6 +36,10 @@ data Coffee = Latte | Cappuccino
 data BusinessOutput = forall b. BusinessOutput b
 
 
+-- TODO: Could add a 'Show' instance to 'BusinessOutput' and use the show
+-- instances per thing.
+
+
 -- | We only know that it was some output.
 instance Show BusinessOutput where
   show _ = "Arbitrary Business Output"
