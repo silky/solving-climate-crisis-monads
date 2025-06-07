@@ -1,5 +1,31 @@
 # Solving the climate crisis with Monads
 
+## Hacking on this codebase
+
+Uses nix + some stack.
+
+```
+> nix develop
+
+> mosquitto -c code/mosquitto.conf
+
+> cd code/haskell
+> stack build
+...
+
+> cd code/ev
+> npm install
+> npm run dev
+...
+
+> stack repl
+> :l src/Scenario1_PureFunctions/Simulation.hs
+> scenario1
+
+```
+
+
+
 ### Talk outline
 
 (Less of a talk outline and more of just a random collection of notes from my

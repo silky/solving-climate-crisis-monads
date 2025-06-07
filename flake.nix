@@ -44,6 +44,7 @@
         buildInputs = [
           myDevTools
 
+          pkgs.mosquitto
           pkgs.nodejs
           pkgs.nodePackages.npm
         ];
